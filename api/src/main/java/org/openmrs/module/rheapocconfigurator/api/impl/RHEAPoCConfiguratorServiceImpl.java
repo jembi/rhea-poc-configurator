@@ -15,9 +15,12 @@ package org.openmrs.module.rheapocconfigurator.api.impl;
 
 import org.openmrs.EncounterType;
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.Privilege;
+import org.openmrs.Role;
 import org.openmrs.api.APIException;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.apache.commons.logging.Log;
@@ -29,6 +32,78 @@ import org.openmrs.module.rheapocconfigurator.api.db.RHEAPoCConfiguratorDAO;
  * It is a default implementation of {@link RHEAPoCConfiguratorService}.
  */
 public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implements RHEAPoCConfiguratorService {
+	
+	private static final String[] IDENTIFIER_TYPES = new String[]{
+		"NID",
+		"Primary Care ID Type",
+		"Mutuelle",
+		"RAMA"
+	};
+	private static final String[] ENCOUNTER_TYPES = new String[]{
+		"ANC OB and Past Medical History",
+		"ANC Physical",
+		"ANC Testing",
+		"ANC Maternal Treatments and Interventions",
+		"ANC Referral",
+		"ANC Referral Confirmation",
+		"ANC Delivery Report",
+		"RapidSMS Notification BIRTH",
+		"RapidSMS Notification Maternal Death",
+		"RapidSMS Notification RISK",
+	};
+	private static final String[] PROVIDER_PRIVILEGES = new String[]{
+		"Add Appointments",
+		"Add Encounters",
+		"Add Observations",
+		"Add People",
+		"Can view a result of patient lab test",
+		"Delete Appointments",
+		"Edit Appointments",
+		"Edit FormEntry Archive",
+		"Edit FormEntry Queue",
+		"Edit People",
+		"Exit a patient from care",
+		"Form Entry",
+		"Manage Implementation Id",
+		"Patient Dashboard - View Demographics Section",
+		"Patient Dashboard - View Forms Section",
+		"Patient Dashboard - View Overview Section",
+		"Patient Dashboard - View PMTCT",
+		"View FormEntry Error",
+		"View Forms",
+		"View Locations",
+		"View Navigation Menu",
+		"View Patient Programs",
+		"View Patients",
+		"View People",
+		"View PMTCT patients in ANC",
+		"View PMTCT pediatric tests",
+		"View Regimens",
+		"View Users",
+		"Add ANC and follow-up information",
+		"Edit Encounters",
+		"Edit Observations",
+		"Manage Services and Providers",
+		"Manage Tokens",
+		"Patient Dashboard - View Appointments Section",
+		"Patient Dashboard - View Encounters Section",
+		"Patient Dashboard - View Graphs Section",
+		"Patient Dashboard - View Patient Summary",
+		"Patient Dashboard - View Regimen Section",
+		"Search Appointments",
+		"View Appointments",
+		"View Concepts",
+		"View Encounters",
+		"View FormEntry Archive",
+		"View FormEntry Queue",
+		"View lab results",
+		"View Observations",
+		"View Orders",
+		"View PMTCT",
+		"View Programs",
+		"View Unpublished Forms",
+		"View provider appointments"
+	};
 	
 	protected final Log log = LogFactory.getLog(this.getClass());
 	
@@ -56,16 +131,10 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 
 	@Override
 	public boolean setupIdentifierTypes() {
-		String[] types = new String[]{
-			"NID",
-			"Primary Care ID Type",
-			"Mutuelle",
-			"RAMA"
-		};
 		PatientService ps = Context.getPatientService();
 		
 		try {
-			for (String type : types) {
+			for (String type : IDENTIFIER_TYPES) {
 				if (ps.getPatientIdentifierTypeByName(type) == null) {
 					PatientIdentifierType pit = new PatientIdentifierType();
 					pit.setName(type);
@@ -95,22 +164,9 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 
 	@Override
 	public boolean setupEncounterTypes() {
-		String[] types = new String[]{
-			"ANC OB and Past Medical History",
-			"ANC Physical",
-			"ANC Testing",
-			"ANC Maternal Treatments and Interventions",
-			"ANC Referral",
-			"ANC Referral Confirmation",
-			"ANC Delivery Report",
-			"RapidSMS Notification BIRTH",
-			"RapidSMS Notification Maternal Death",
-			"RapidSMS Notification RISK",
-		};
-		
 		EncounterService es = Context.getEncounterService();
 		try {
-			for (String type : types) {
+			for (String type : ENCOUNTER_TYPES) {
 				if (es.getEncounterType(type) == null) {
 					EncounterType et = new EncounterType();
 					et.setName(type);
@@ -134,7 +190,28 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 
 	@Override
 	public boolean setupProviderPrivileges() {
-		// TODO Auto-generated method stub
-		return false;
+		log.info("------setupProviderPrivileges");
+		UserService us = Context.getUserService();
+		try {
+			Role provider = us.getRole("Provider");
+			for (String privilegeName : PROVIDER_PRIVILEGES) {
+				log.info(privilegeName);
+				Privilege privilege = us.getPrivilege(privilegeName);
+				if (privilege==null) {
+					privilege = new Privilege();
+					privilege.setPrivilege(privilegeName);
+					privilege.setName(privilegeName);
+					privilege.setDescription(privilegeName);
+					us.savePrivilege(privilege);
+				}
+				provider.addPrivilege(privilege);
+			}
+			us.saveRole(provider);
+		} catch (APIException ex) {
+			log.error("Failed to setup provider privileges", ex);
+			return false;
+		}
+		
+		return true;
 	}
 }
