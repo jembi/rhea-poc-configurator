@@ -13,7 +13,10 @@
  */
 package org.openmrs.module.rheapocconfigurator.api.impl;
 
+import org.openmrs.EncounterType;
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.api.APIException;
+import org.openmrs.api.EncounterService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
@@ -53,16 +56,28 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 
 	@Override
 	public boolean setupIdentifierTypes() {
-		String[] types = new String[]{"NID", "Primary Care ID Type", "Mutuelle", "RAMA"};
+		String[] types = new String[]{
+			"NID",
+			"Primary Care ID Type",
+			"Mutuelle",
+			"RAMA"
+		};
 		PatientService ps = Context.getPatientService();
-		for (String type : types) {
-			if (ps.getPatientIdentifierTypeByName(type) == null) {
-				PatientIdentifierType pit = new PatientIdentifierType();
-				pit.setName(type);
-				pit.setDescription(type);
-				ps.savePatientIdentifierType(pit);
+		
+		try {
+			for (String type : types) {
+				if (ps.getPatientIdentifierTypeByName(type) == null) {
+					PatientIdentifierType pit = new PatientIdentifierType();
+					pit.setName(type);
+					pit.setDescription(type);
+					ps.savePatientIdentifierType(pit);
+				}
 			}
+		} catch (APIException ex) {
+			log.error("Failed to setup identifier types", ex);
+			return false;
 		}
+		
 		return true;
 	}
 
@@ -80,8 +95,35 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 
 	@Override
 	public boolean setupEncounterTypes() {
-		// TODO Auto-generated method stub
-		return false;
+		String[] types = new String[]{
+			"ANC OB and Past Medical History",
+			"ANC Physical",
+			"ANC Testing",
+			"ANC Maternal Treatments and Interventions",
+			"ANC Referral",
+			"ANC Referral Confirmation",
+			"ANC Delivery Report",
+			"RapidSMS Notification BIRTH",
+			"RapidSMS Notification Maternal Death",
+			"RapidSMS Notification RISK",
+		};
+		
+		EncounterService es = Context.getEncounterService();
+		try {
+			for (String type : types) {
+				if (es.getEncounterType(type) == null) {
+					EncounterType et = new EncounterType();
+					et.setName(type);
+					et.setDescription(type);
+					es.saveEncounterType(et);
+				}
+			}
+		} catch (APIException ex) {
+			log.error("Failed to setup encounter types", ex);
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override
