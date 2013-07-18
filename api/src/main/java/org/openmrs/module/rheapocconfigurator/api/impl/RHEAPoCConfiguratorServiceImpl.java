@@ -13,20 +13,30 @@
  */
 package org.openmrs.module.rheapocconfigurator.api.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+
 import org.openmrs.EncounterType;
+import org.openmrs.Form;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.Privilege;
 import org.openmrs.Role;
 import org.openmrs.api.APIException;
 import org.openmrs.api.EncounterService;
+import org.openmrs.api.FormService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.htmlformentry.HtmlForm;
+import org.openmrs.module.htmlformentry.HtmlFormEntryService;
 import org.openmrs.module.rheapocconfigurator.api.RHEAPoCConfiguratorService;
 import org.openmrs.module.rheapocconfigurator.api.db.RHEAPoCConfiguratorDAO;
+import org.springframework.transaction.UnexpectedRollbackException;
 
 /**
  * It is a default implementation of {@link RHEAPoCConfiguratorService}.
@@ -104,6 +114,15 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 		"View Unpublished Forms",
 		"View provider appointments"
 	};
+	private static final FormMetadata[] FORMS = new FormMetadata[]{
+		new FormMetadata("RHEA ANC 1: OB and Past Medical History", "1.0", ENCOUNTER_TYPES[0], "RHEA OB and Past Medical History"),
+		new FormMetadata("RHEA ANC 2: Physical", "1.0", ENCOUNTER_TYPES[1], "RHEA ANC Physical"),
+		new FormMetadata("RHEA ANC 3: Testing", "1.0", ENCOUNTER_TYPES[2], "RHEA ANC Testing"),
+		new FormMetadata("RHEA ANC 4: Maternal Treatments and Interventions", "1.0", ENCOUNTER_TYPES[3], "RHEA Maternal Treatments and Interventions"),
+		new FormMetadata("RHEA ANC 5: Referral Form", "1.0", ENCOUNTER_TYPES[4], "RHEA Referral Form"),
+		new FormMetadata("RHEA ANC 6: Referral Confirmation Form", "1.0", ENCOUNTER_TYPES[5], "RHEA ANC Referral Confirmation Form"),
+		new FormMetadata("RHEA ANC 7: Delivery Report", "1.0", ENCOUNTER_TYPES[6], "RHEA ANC Delivery Report")
+	};
 	
 	protected final Log log = LogFactory.getLog(this.getClass());
 	
@@ -145,6 +164,9 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 		} catch (APIException ex) {
 			log.error("Failed to setup identifier types", ex);
 			return false;
+		} catch (UnexpectedRollbackException ex) {
+			log.error("Failed to setup identifier types", ex);
+			return false;
 		}
 		
 		return true;
@@ -177,25 +199,73 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 		} catch (APIException ex) {
 			log.error("Failed to setup encounter types", ex);
 			return false;
+		} catch (UnexpectedRollbackException ex) {
+			log.error("Failed to setup encounter types", ex);
+			return false;
 		}
 		
 		return true;
 	}
 
+	/***
+	 * setupEncounterTypes needs to run first!
+	 */
 	@Override
 	public boolean setupForms() {
-		// TODO Auto-generated method stub
-		return false;
+		FormService fs = Context.getFormService();
+		EncounterService es = Context.getEncounterService();
+		HtmlFormEntryService hfes = Context.getService(HtmlFormEntryService.class);
+		
+		try {
+			for (FormMetadata fm : FORMS) {
+				Form form = fs.getForm(fm.name);
+				if (form!=null)
+					continue;
+				
+				InputStream file = getClass().getClassLoader().getResourceAsStream(fm.file);
+				StringWriter sw = new StringWriter();
+				IOUtils.copy(file, sw);
+				form = new Form();
+				form.setName(fm.name);
+				form.setVersion(fm.version);
+				form.setPublished(true);
+				form.setEncounterType(es.getEncounterType(fm.encounterType));
+				fs.saveForm(form);
+				
+				HtmlForm htmlForm = new HtmlForm();
+				htmlForm.setForm(form);
+				htmlForm.setDescription(fm.name);
+				htmlForm.setName(fm.name);
+				htmlForm.setXmlData(sw.toString());
+				hfes.saveHtmlForm(htmlForm);
+				
+				try {
+					file.close();
+				} catch (Exception ex) {
+					//quiet!
+				}
+			}
+		} catch (APIException ex) {
+			log.error("Failed to setup forms", ex);
+			return false;
+		} catch (UnexpectedRollbackException ex) {
+			log.error("Failed to setup forms", ex);
+			return false;
+		} catch (IOException ex) {
+			log.error("Failed to setup forms", ex);
+			return false;
+		}
+		
+		return true;
 	}
+
 
 	@Override
 	public boolean setupProviderPrivileges() {
-		log.info("------setupProviderPrivileges");
 		UserService us = Context.getUserService();
 		try {
 			Role provider = us.getRole("Provider");
 			for (String privilegeName : PROVIDER_PRIVILEGES) {
-				log.info(privilegeName);
 				Privilege privilege = us.getPrivilege(privilegeName);
 				if (privilege==null) {
 					privilege = new Privilege();
@@ -210,8 +280,26 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 		} catch (APIException ex) {
 			log.error("Failed to setup provider privileges", ex);
 			return false;
+		} catch (UnexpectedRollbackException ex) {
+			log.error("Failed to setup provider privileges", ex);
+			return false;
 		}
 		
 		return true;
+	}
+	
+	
+	private static class FormMetadata {
+		String name;
+		String version;
+		String encounterType;
+		String file;
+		
+		FormMetadata(String name, String version, String encounterType, String file) {
+			this.name = name;
+			this.version = version;
+			this.encounterType = encounterType;
+			this.file = file;
+		}
 	}
 }
