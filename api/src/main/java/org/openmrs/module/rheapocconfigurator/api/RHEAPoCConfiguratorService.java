@@ -13,8 +13,10 @@
  */
 package org.openmrs.module.rheapocconfigurator.api;
 
+import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.rheapocconfigurator.GlobalPropertiesInput;
+import org.openmrs.util.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -30,10 +32,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface RHEAPoCConfiguratorService extends OpenmrsService {
      
+	@Authorized({PrivilegeConstants.MANAGE_GLOBAL_PROPERTIES})
 	boolean setupGlobalProperties(GlobalPropertiesInput input);
+	@Authorized({PrivilegeConstants.MANAGE_IDENTIFIER_TYPES})
 	boolean setupIdentifierTypes();
 	boolean setupConfigForPrimaryCareModule();
+	@Authorized({PrivilegeConstants.MANAGE_ENCOUNTER_TYPES})
 	boolean setupEncounterTypes();
+	@Authorized({PrivilegeConstants.MANAGE_FORMS})
 	boolean setupForms();
+	@Authorized({PrivilegeConstants.MANAGE_PRIVILEGES})
 	boolean setupProviderPrivileges();
 }

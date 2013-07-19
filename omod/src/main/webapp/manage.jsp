@@ -3,6 +3,8 @@
 
 <%@ include file="template/localHeader.jsp"%>
 
+<openmrs:require privilege="Manage Global Properties" otherwise="/login.htm" redirect="/module/rheapocconfigurator/manage.form" />
+
 <form:form id="configGo" modelAttribute="config" method="post">
 <c:choose>
 	<c:when test="${config.overallStatus == null}">
