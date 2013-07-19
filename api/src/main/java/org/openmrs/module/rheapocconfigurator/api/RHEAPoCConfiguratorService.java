@@ -32,10 +32,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface RHEAPoCConfiguratorService extends OpenmrsService {
      
-	@Authorized({PrivilegeConstants.MANAGE_GLOBAL_PROPERTIES})
-	boolean setupGlobalProperties(GlobalPropertiesInput input);
 	@Authorized({PrivilegeConstants.MANAGE_IDENTIFIER_TYPES})
 	boolean setupIdentifierTypes();
+	@Authorized({PrivilegeConstants.MANAGE_GLOBAL_PROPERTIES})
+	boolean setupGlobalProperties(GlobalPropertiesInput input);
 	boolean setupConfigForPrimaryCareModule();
 	@Authorized({PrivilegeConstants.MANAGE_ENCOUNTER_TYPES})
 	boolean setupEncounterTypes();

@@ -21,19 +21,19 @@
 		</c:choose>
 		<table>
 			<tr>
-				<td>Global Properties</td>
+				<td>Identifier Types</td>
 				<td>
 					<c:choose>
-						<c:when test="${config.statusGlobalProperties == true}"><img src="${pageContext.request.contextPath}/images/checkmark.png"/></c:when>
+						<c:when test="${config.statusIdentifierTypes == true}"><img src="${pageContext.request.contextPath}/images/checkmark.png"/></c:when>
 						<c:otherwise><img src="${pageContext.request.contextPath}/images/error.gif"/></c:otherwise>
 					</c:choose>
 				</td>
 			</tr>
 			<tr>
-				<td>Identifier Types</td>
+				<td>Global Properties</td>
 				<td>
 					<c:choose>
-						<c:when test="${config.statusIdentifierTypes == true}"><img src="${pageContext.request.contextPath}/images/checkmark.png"/></c:when>
+						<c:when test="${config.statusGlobalProperties == true}"><img src="${pageContext.request.contextPath}/images/checkmark.png"/></c:when>
 						<c:otherwise><img src="${pageContext.request.contextPath}/images/error.gif"/></c:otherwise>
 					</c:choose>
 				</td>

@@ -51,18 +51,18 @@ public class  RHEAPoCConfiguratorManageController {
 	public ModelAndView runConfigurator(HttpServletRequest request, HttpServletResponse response, @ModelAttribute("config") Config config, BindingResult errors) {
 		RHEAPoCConfiguratorService cs = Context.getService(RHEAPoCConfiguratorService.class);
 		
-		if (config.statusGlobalProperties == null || config.statusGlobalProperties == false) {
-			try {
-				config.statusGlobalProperties = cs.setupGlobalProperties(config.getGlobalPropsInput());
-			} catch (UnexpectedRollbackException ex) {
-				config.statusGlobalProperties = false;
-			}
-		}
 		if (config.statusIdentifierTypes == null || config.statusIdentifierTypes == false) {
 			try {
 				config.statusIdentifierTypes = cs.setupIdentifierTypes();
 			} catch (UnexpectedRollbackException ex) {
 				config.statusIdentifierTypes = false;
+			}
+		}
+		if (config.statusGlobalProperties == null || config.statusGlobalProperties == false) {
+			try {
+				config.statusGlobalProperties = cs.setupGlobalProperties(config.getGlobalPropsInput());
+			} catch (UnexpectedRollbackException ex) {
+				config.statusGlobalProperties = false;
 			}
 		}
 		if (config.statusConfigForPrimaryCareModule == null || config.statusConfigForPrimaryCareModule == false) {

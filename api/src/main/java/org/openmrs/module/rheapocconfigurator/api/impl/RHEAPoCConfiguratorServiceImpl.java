@@ -22,6 +22,7 @@ import org.openmrs.Form;
 import org.openmrs.GlobalProperty;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.Privilege;
+import org.openmrs.RelationshipType;
 import org.openmrs.Role;
 import org.openmrs.api.APIException;
 import org.openmrs.api.AdministrationService;
@@ -158,36 +159,7 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 	    return dao;
     }
 
-	@Override
-	public boolean setupGlobalProperties(GlobalPropertiesInput input) {
-		AdministrationService as = Context.getAdministrationService();
-		try {
-			for (GlobalProperty gp : GLOBAL_PROPERTIES) {
-				as.saveGlobalProperty(gp);
-			}
-			
-			as.saveGlobalProperty(new GlobalProperty("rheapocadapter.hostname", input.getHimHost()));
-			as.saveGlobalProperty(new GlobalProperty("rheapocadapter.username", input.getHimUsername()));
-			as.saveGlobalProperty(new GlobalProperty("rheapocadapter.password", input.getHimPassword()));
-			as.saveGlobalProperty(new GlobalProperty("scheduler.username", input.getSchedulerUsername()));
-			as.saveGlobalProperty(new GlobalProperty("scheduler.password", input.getSchedulerPassword()));
-			as.saveGlobalProperty(new GlobalProperty("registration.defaultLocationCode", input.getLocationID()));
-			as.saveGlobalProperty(new GlobalProperty("registration.rwandaLocationCodes", input.getLocationName() + ":" + input.getLocationID()));
-			as.saveGlobalProperty(new GlobalProperty("rheapocadapter.sendingFacility", input.getLocationFOSAID()));
-			
-			//TODO
-			//registration.otherIdentifierTypes = check the database to determine the ID of all identifiers that can be searched against.
-			//registration.parentChildRelationshipTypeId = check the database to determine the ID
-			//registration.primaryIdentifierType = check the database to determine the ID
-		} catch (APIException ex) {
-			log.error("Failed to setup global properties", ex);
-			return false;
-		}
-		
-		return true;
-	}
-	
-
+    
 	@Override
 	public boolean setupIdentifierTypes() {
 		PatientService ps = Context.getPatientService();
@@ -208,6 +180,53 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 		
 		return true;
 	}
+
+	/***
+	 * setupIdentifierTypes needs to run first!
+	 */
+	@Override
+	public boolean setupGlobalProperties(GlobalPropertiesInput input) {
+		AdministrationService as = Context.getAdministrationService();
+		try {
+			for (GlobalProperty gp : GLOBAL_PROPERTIES) {
+				as.saveGlobalProperty(gp);
+			}
+			
+			as.saveGlobalProperty(new GlobalProperty("rheapocadapter.hostname", input.getHimHost()));
+			as.saveGlobalProperty(new GlobalProperty("rheapocadapter.username", input.getHimUsername()));
+			as.saveGlobalProperty(new GlobalProperty("rheapocadapter.password", input.getHimPassword()));
+			as.saveGlobalProperty(new GlobalProperty("scheduler.username", input.getSchedulerUsername()));
+			as.saveGlobalProperty(new GlobalProperty("scheduler.password", input.getSchedulerPassword()));
+			as.saveGlobalProperty(new GlobalProperty("registration.defaultLocationCode", input.getLocationID()));
+			as.saveGlobalProperty(new GlobalProperty("registration.rwandaLocationCodes", input.getLocationName() + ":" + input.getLocationID()));
+			as.saveGlobalProperty(new GlobalProperty("rheapocadapter.sendingFacility", input.getLocationFOSAID()));
+			
+			RelationshipType rs = Context.getPersonService().getRelationshipTypeByName("Parent/Child");
+			if (rs==null) {
+				log.warn("Parent/Child relationship type not found");
+				return false;
+			} else {
+				as.saveGlobalProperty(new GlobalProperty("registration.parentChildRelationshipTypeId", rs.getId().toString()));
+			}
+			
+			PatientIdentifierType pit = Context.getPatientService().getPatientIdentifierTypeByName("Primary Care ID Type");
+			if (pit==null) {
+				log.warn("Primary Care ID Type not found");
+				return false;
+			} else {
+				as.saveGlobalProperty(new GlobalProperty("registration.primaryIdentifierType", pit.getId().toString()));
+			}
+			
+			//TODO
+			//registration.otherIdentifierTypes = check the database to determine the ID of all identifiers that can be searched against.
+		} catch (APIException ex) {
+			log.error("Failed to setup global properties", ex);
+			return false;
+		}
+		
+		return true;
+	}
+	
 
 	@Override
 	public boolean setupConfigForPrimaryCareModule() {
