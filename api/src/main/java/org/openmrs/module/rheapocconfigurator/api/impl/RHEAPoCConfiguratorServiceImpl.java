@@ -215,11 +215,6 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 		return false;
 	}
 
-	@Override
-	public boolean setupConfigForAppointmentModule() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public boolean setupEncounterTypes() {

@@ -33,7 +33,6 @@ public interface RHEAPoCConfiguratorService extends OpenmrsService {
 	boolean setupGlobalProperties(GlobalPropertiesInput input);
 	boolean setupIdentifierTypes();
 	boolean setupConfigForPrimaryCareModule();
-	boolean setupConfigForAppointmentModule();
 	boolean setupEncounterTypes();
 	boolean setupForms();
 	boolean setupProviderPrivileges();

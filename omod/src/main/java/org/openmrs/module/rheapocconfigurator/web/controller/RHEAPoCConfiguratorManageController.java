@@ -72,13 +72,6 @@ public class  RHEAPoCConfiguratorManageController {
 				config.statusConfigForPrimaryCareModule = false;
 			}
 		}
-		if (config.statusConfigForAppointmentModule == null || config.statusConfigForAppointmentModule == false) {
-			try {
-				config.statusConfigForAppointmentModule = cs.setupConfigForAppointmentModule();
-			} catch (UnexpectedRollbackException ex) {
-				config.statusConfigForAppointmentModule = false;
-			}
-		}
 		if (config.statusEncounterTypes == null || config.statusEncounterTypes == false) {
 			try {
 				config.statusEncounterTypes = cs.setupEncounterTypes();
@@ -108,7 +101,6 @@ public class  RHEAPoCConfiguratorManageController {
 		private Boolean statusGlobalProperties;
 		private Boolean statusIdentifierTypes;
 		private Boolean statusConfigForPrimaryCareModule;
-		private Boolean statusConfigForAppointmentModule;
 		private Boolean statusEncounterTypes;
 		private Boolean statusForms;
 		private Boolean statusProviderPrivileges;
@@ -118,91 +110,67 @@ public class  RHEAPoCConfiguratorManageController {
 		
 		public Boolean getOverallStatus() {
 			if (statusGlobalProperties==null || statusIdentifierTypes==null || statusConfigForPrimaryCareModule==null ||
-				statusConfigForAppointmentModule==null || statusEncounterTypes==null || statusForms==null ||
+				statusEncounterTypes==null || statusForms==null ||
 				statusProviderPrivileges==null)
 				return null;
 			return (statusGlobalProperties && statusIdentifierTypes && statusConfigForPrimaryCareModule &&
-				statusConfigForAppointmentModule && statusEncounterTypes && statusForms &&
+				statusEncounterTypes && statusForms &&
 				statusProviderPrivileges);
 		}
-
+		
 
 		public Boolean getStatusGlobalProperties() {
 			return statusGlobalProperties;
 		}
 
-
 		public void setStatusGlobalProperties(Boolean statusGlobalProperties) {
 			this.statusGlobalProperties = statusGlobalProperties;
 		}
-
 
 		public Boolean getStatusIdentifierTypes() {
 			return statusIdentifierTypes;
 		}
 
-
 		public void setStatusIdentifierTypes(Boolean statusIdentifierTypes) {
 			this.statusIdentifierTypes = statusIdentifierTypes;
 		}
 
-
 		public Boolean getStatusConfigForPrimaryCareModule() {
 			return statusConfigForPrimaryCareModule;
 		}
-
 
 		public void setStatusConfigForPrimaryCareModule(
 				Boolean statusConfigForPrimaryCareModule) {
 			this.statusConfigForPrimaryCareModule = statusConfigForPrimaryCareModule;
 		}
 
-
-		public Boolean getStatusConfigForAppointmentModule() {
-			return statusConfigForAppointmentModule;
-		}
-
-
-		public void setStatusConfigForAppointmentModule(
-				Boolean statusConfigForAppointmentModule) {
-			this.statusConfigForAppointmentModule = statusConfigForAppointmentModule;
-		}
-
-
 		public Boolean getStatusEncounterTypes() {
 			return statusEncounterTypes;
 		}
-
 
 		public void setStatusEncounterTypes(Boolean statusEncounterTypes) {
 			this.statusEncounterTypes = statusEncounterTypes;
 		}
 
-
 		public Boolean getStatusForms() {
 			return statusForms;
 		}
-
 
 		public void setStatusForms(Boolean statusForms) {
 			this.statusForms = statusForms;
 		}
 
-
 		public Boolean getStatusProviderPrivileges() {
 			return statusProviderPrivileges;
 		}
-
 
 		public void setStatusProviderPrivileges(Boolean statusProviderPrivileges) {
 			this.statusProviderPrivileges = statusProviderPrivileges;
 		}
 
-
 		public GlobalPropertiesInput getGlobalPropsInput() {
 			return globalPropsInput;
 		}
-
 
 		public void setGlobalPropsInput(GlobalPropertiesInput globalPropsInput) {
 			this.globalPropsInput = globalPropsInput;

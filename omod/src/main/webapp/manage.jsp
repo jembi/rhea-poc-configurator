@@ -46,15 +46,6 @@
 				</td>
 			</tr>
 			<tr>
-				<td>Config for Appointment Module</td>
-				<td>
-					<c:choose>
-						<c:when test="${config.statusConfigForAppointmentModule == true}"><img src="${pageContext.request.contextPath}/images/checkmark.png"/></c:when>
-						<c:otherwise><img src="${pageContext.request.contextPath}/images/error.gif"/></c:otherwise>
-					</c:choose>
-				</td>
-			</tr>
-			<tr>
 				<td>Encounter Types</td>
 				<td>
 					<c:choose>

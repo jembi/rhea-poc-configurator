@@ -17,11 +17,9 @@
 
 	<require_modules>
 		<require_module version="2.0.1">org.openmrs.module.htmlformentry</require_module>
-		<!--
 		<require_module>org.openmrs.module.rheapocadapter</require_module>
 		<require_module>org.openmrs.module.rwandaprimarycare</require_module>
 		<require_module>org.openmrs.module.maternalsummary</require_module>
-		-->
 	</require_modules>
 
 	
