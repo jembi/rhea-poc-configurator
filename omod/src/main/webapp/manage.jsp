@@ -84,7 +84,20 @@
 		</table>
 	</c:otherwise>
 </c:choose>
-<input type="submit" value="Perform Configuration" <c:if test="${config.overallStatus == true}"><c:out value="disabled='disabled'"/></c:if>>
+<br/>
+<p>
+	<table>
+		<tr><td>OpenHIM Host</td><td><form:input id="himHost" path="globalPropsInput.himHost"/></td></tr>
+		<tr><td>OpenHIM Username</td><td><form:input id="himUsername" path="globalPropsInput.himUsername"/></td></tr>
+		<tr><td>OpenHIM Password</td><td><form:input id="himPassword" path="globalPropsInput.himPassword"/></td></tr>
+		<tr><td>Scheduler Username</td><td><form:input id="himUsername" path="globalPropsInput.schedulerUsername"/></td></tr>
+		<tr><td>Scheduler Password</td><td><form:input id="himPassword" path="globalPropsInput.schedulerPassword"/></td></tr>
+		<tr><td>Location ID</td><td><form:input id="locationID" path="globalPropsInput.locationID"/></td></tr>
+		<tr><td>Location Name</td><td><form:input id="locationName" path="globalPropsInput.locationName"/></td></tr>
+		<tr><td>Location FOSAID</td><td><form:input id="locationFOSAID" path="globalPropsInput.locationFOSAID"/></td></tr>
+	</table>
+	<input type="submit" value="Perform Configuration" <c:if test="${config.overallStatus == true}"><c:out value="disabled='disabled'"/></c:if>>
+</p>
 </form:form>
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>

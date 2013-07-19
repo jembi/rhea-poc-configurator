@@ -19,8 +19,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.rheapocconfigurator.GlobalPropertiesInput;
 import org.openmrs.module.rheapocconfigurator.api.RHEAPoCConfiguratorService;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -49,20 +51,55 @@ public class  RHEAPoCConfiguratorManageController {
 	public ModelAndView runConfigurator(HttpServletRequest request, HttpServletResponse response, @ModelAttribute("config") Config config, BindingResult errors) {
 		RHEAPoCConfiguratorService cs = Context.getService(RHEAPoCConfiguratorService.class);
 		
-		if (config.statusGlobalProperties == null || config.statusGlobalProperties == false)
-			config.statusGlobalProperties = cs.setupGlobalProperties();
-		if (config.statusIdentifierTypes == null || config.statusIdentifierTypes == false)
-			config.statusIdentifierTypes = cs.setupIdentifierTypes();
-		if (config.statusConfigForPrimaryCareModule == null || config.statusConfigForPrimaryCareModule == false)
-			config.statusConfigForPrimaryCareModule = cs.setupConfigForPrimaryCareModule();
-		if (config.statusConfigForAppointmentModule == null || config.statusConfigForAppointmentModule == false)
-			config.statusConfigForAppointmentModule = cs.setupConfigForAppointmentModule();
-		if (config.statusEncounterTypes == null || config.statusEncounterTypes == false)
-			config.statusEncounterTypes = cs.setupEncounterTypes();
-		if (config.statusForms == null || config.statusForms == false)
-			config.statusForms = cs.setupForms();
-		if (config.statusProviderPrivileges == null || config.statusProviderPrivileges == false)
-			config.statusProviderPrivileges = cs.setupProviderPrivileges();
+		if (config.statusGlobalProperties == null || config.statusGlobalProperties == false) {
+			try {
+				config.statusGlobalProperties = cs.setupGlobalProperties(config.getGlobalPropsInput());
+			} catch (UnexpectedRollbackException ex) {
+				config.statusGlobalProperties = false;
+			}
+		}
+		if (config.statusIdentifierTypes == null || config.statusIdentifierTypes == false) {
+			try {
+				config.statusIdentifierTypes = cs.setupIdentifierTypes();
+			} catch (UnexpectedRollbackException ex) {
+				config.statusIdentifierTypes = false;
+			}
+		}
+		if (config.statusConfigForPrimaryCareModule == null || config.statusConfigForPrimaryCareModule == false) {
+			try {
+				config.statusConfigForPrimaryCareModule = cs.setupConfigForPrimaryCareModule();
+			} catch (UnexpectedRollbackException ex) {
+				config.statusConfigForPrimaryCareModule = false;
+			}
+		}
+		if (config.statusConfigForAppointmentModule == null || config.statusConfigForAppointmentModule == false) {
+			try {
+				config.statusConfigForAppointmentModule = cs.setupConfigForAppointmentModule();
+			} catch (UnexpectedRollbackException ex) {
+				config.statusConfigForAppointmentModule = false;
+			}
+		}
+		if (config.statusEncounterTypes == null || config.statusEncounterTypes == false) {
+			try {
+				config.statusEncounterTypes = cs.setupEncounterTypes();
+			} catch (UnexpectedRollbackException ex) {
+				config.statusEncounterTypes = false;
+			}
+		}
+		if (config.statusForms == null || config.statusForms == false) {
+			try {
+				config.statusForms = cs.setupForms();
+			} catch (UnexpectedRollbackException ex) {
+				config.statusForms = false;
+			}
+		}
+		if (config.statusProviderPrivileges == null || config.statusProviderPrivileges == false) {
+			try {
+				config.statusProviderPrivileges = cs.setupProviderPrivileges();
+			} catch (UnexpectedRollbackException ex) {
+				config.statusProviderPrivileges = false;
+			}
+		}
 		
 		return new ModelAndView("redirect:manage.form");
 	}
@@ -75,6 +112,8 @@ public class  RHEAPoCConfiguratorManageController {
 		private Boolean statusEncounterTypes;
 		private Boolean statusForms;
 		private Boolean statusProviderPrivileges;
+		
+		private GlobalPropertiesInput globalPropsInput = new GlobalPropertiesInput();
 		
 		
 		public Boolean getOverallStatus() {
@@ -157,6 +196,16 @@ public class  RHEAPoCConfiguratorManageController {
 
 		public void setStatusProviderPrivileges(Boolean statusProviderPrivileges) {
 			this.statusProviderPrivileges = statusProviderPrivileges;
+		}
+
+
+		public GlobalPropertiesInput getGlobalPropsInput() {
+			return globalPropsInput;
+		}
+
+
+		public void setGlobalPropsInput(GlobalPropertiesInput globalPropsInput) {
+			this.globalPropsInput = globalPropsInput;
 		}
 	}
 }

@@ -14,6 +14,7 @@
 package org.openmrs.module.rheapocconfigurator.api;
 
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.rheapocconfigurator.GlobalPropertiesInput;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -29,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface RHEAPoCConfiguratorService extends OpenmrsService {
      
-	boolean setupGlobalProperties();
+	boolean setupGlobalProperties(GlobalPropertiesInput input);
 	boolean setupIdentifierTypes();
 	boolean setupConfigForPrimaryCareModule();
 	boolean setupConfigForAppointmentModule();

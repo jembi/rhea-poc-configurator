@@ -19,10 +19,12 @@ import java.io.StringWriter;
 
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
+import org.openmrs.GlobalProperty;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.Privilege;
 import org.openmrs.Role;
 import org.openmrs.api.APIException;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.FormService;
 import org.openmrs.api.PatientService;
@@ -34,9 +36,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.htmlformentry.HtmlForm;
 import org.openmrs.module.htmlformentry.HtmlFormEntryService;
+import org.openmrs.module.rheapocconfigurator.GlobalPropertiesInput;
 import org.openmrs.module.rheapocconfigurator.api.RHEAPoCConfiguratorService;
 import org.openmrs.module.rheapocconfigurator.api.db.RHEAPoCConfiguratorDAO;
-import org.springframework.transaction.UnexpectedRollbackException;
 
 /**
  * It is a default implementation of {@link RHEAPoCConfiguratorService}.
@@ -123,6 +125,20 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 		new FormMetadata("RHEA ANC 6: Referral Confirmation Form", "1.0", ENCOUNTER_TYPES[5], "RHEA ANC Referral Confirmation Form"),
 		new FormMetadata("RHEA ANC 7: Delivery Report", "1.0", ENCOUNTER_TYPES[6], "RHEA ANC Delivery Report")
 	};
+	private static final GlobalProperty[] GLOBAL_PROPERTIES = new GlobalProperty[]{
+		new GlobalProperty("registration.barCodeCount", "4"),
+		new GlobalProperty("registration.healthCenterPersonAttribute", "health center"),
+		new GlobalProperty("registration.insuranceNumberConcept", "6741"),
+		new GlobalProperty("registration.insuranceTypeConcept", "6740"),
+		new GlobalProperty("registration.insuranceTypeConceptAnswers", "6738, 6739, 6955, 6956, 6957, 1107"),
+		new GlobalProperty("registration.nationalIdType", "NID"),
+		new GlobalProperty("registration.restrictSearchByHealthCenter", "false"),
+		new GlobalProperty("registration.serviceRequestedConcept", "6702"),
+		
+		new GlobalProperty("rheapocadapter.encounterType", "ANTENATAL CLINIC, ANC, ANC Referral, ANC Referral Confirmation, ANC OB and Past Medical History, ANC Physical, ANC Testing, ANC Maternal Treatments and Interventions, ANC Delivery Report"),
+
+		new GlobalProperty("htmlformentry.dateFormat", "MM/dd/yyyy"),
+	};
 	
 	protected final Log log = LogFactory.getLog(this.getClass());
 	
@@ -143,10 +159,34 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
     }
 
 	@Override
-	public boolean setupGlobalProperties() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean setupGlobalProperties(GlobalPropertiesInput input) {
+		AdministrationService as = Context.getAdministrationService();
+		try {
+			for (GlobalProperty gp : GLOBAL_PROPERTIES) {
+				as.saveGlobalProperty(gp);
+			}
+			
+			as.saveGlobalProperty(new GlobalProperty("rheapocadapter.hostname", input.getHimHost()));
+			as.saveGlobalProperty(new GlobalProperty("rheapocadapter.username", input.getHimUsername()));
+			as.saveGlobalProperty(new GlobalProperty("rheapocadapter.password", input.getHimPassword()));
+			as.saveGlobalProperty(new GlobalProperty("scheduler.username", input.getSchedulerUsername()));
+			as.saveGlobalProperty(new GlobalProperty("scheduler.password", input.getSchedulerPassword()));
+			as.saveGlobalProperty(new GlobalProperty("registration.defaultLocationCode", input.getLocationID()));
+			as.saveGlobalProperty(new GlobalProperty("registration.rwandaLocationCodes", input.getLocationName() + ":" + input.getLocationID()));
+			as.saveGlobalProperty(new GlobalProperty("rheapocadapter.sendingFacility", input.getLocationFOSAID()));
+			
+			//TODO
+			//registration.otherIdentifierTypes = check the database to determine the ID of all identifiers that can be searched against.
+			//registration.parentChildRelationshipTypeId = check the database to determine the ID
+			//registration.primaryIdentifierType = check the database to determine the ID
+		} catch (APIException ex) {
+			log.error("Failed to setup global properties", ex);
+			return false;
+		}
+		
+		return true;
 	}
+	
 
 	@Override
 	public boolean setupIdentifierTypes() {
@@ -162,9 +202,6 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 				}
 			}
 		} catch (APIException ex) {
-			log.error("Failed to setup identifier types", ex);
-			return false;
-		} catch (UnexpectedRollbackException ex) {
 			log.error("Failed to setup identifier types", ex);
 			return false;
 		}
@@ -197,9 +234,6 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 				}
 			}
 		} catch (APIException ex) {
-			log.error("Failed to setup encounter types", ex);
-			return false;
-		} catch (UnexpectedRollbackException ex) {
 			log.error("Failed to setup encounter types", ex);
 			return false;
 		}
@@ -248,9 +282,6 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 		} catch (APIException ex) {
 			log.error("Failed to setup forms", ex);
 			return false;
-		} catch (UnexpectedRollbackException ex) {
-			log.error("Failed to setup forms", ex);
-			return false;
 		} catch (IOException ex) {
 			log.error("Failed to setup forms", ex);
 			return false;
@@ -278,9 +309,6 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 			}
 			us.saveRole(provider);
 		} catch (APIException ex) {
-			log.error("Failed to setup provider privileges", ex);
-			return false;
-		} catch (UnexpectedRollbackException ex) {
 			log.error("Failed to setup provider privileges", ex);
 			return false;
 		}
