@@ -229,13 +229,6 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 	
 
 	@Override
-	public boolean setupConfigForPrimaryCareModule() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
-	@Override
 	public boolean setupEncounterTypes() {
 		EncounterService es = Context.getEncounterService();
 		try {

@@ -36,7 +36,6 @@ public interface RHEAPoCConfiguratorService extends OpenmrsService {
 	boolean setupIdentifierTypes();
 	@Authorized({PrivilegeConstants.MANAGE_GLOBAL_PROPERTIES})
 	boolean setupGlobalProperties(GlobalPropertiesInput input);
-	boolean setupConfigForPrimaryCareModule();
 	@Authorized({PrivilegeConstants.MANAGE_ENCOUNTER_TYPES})
 	boolean setupEncounterTypes();
 	@Authorized({PrivilegeConstants.MANAGE_FORMS})

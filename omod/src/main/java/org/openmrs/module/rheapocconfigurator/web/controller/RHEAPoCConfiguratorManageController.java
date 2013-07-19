@@ -65,13 +65,6 @@ public class  RHEAPoCConfiguratorManageController {
 				config.statusGlobalProperties = false;
 			}
 		}
-		if (config.statusConfigForPrimaryCareModule == null || config.statusConfigForPrimaryCareModule == false) {
-			try {
-				config.statusConfigForPrimaryCareModule = cs.setupConfigForPrimaryCareModule();
-			} catch (UnexpectedRollbackException ex) {
-				config.statusConfigForPrimaryCareModule = false;
-			}
-		}
 		if (config.statusEncounterTypes == null || config.statusEncounterTypes == false) {
 			try {
 				config.statusEncounterTypes = cs.setupEncounterTypes();
@@ -100,7 +93,6 @@ public class  RHEAPoCConfiguratorManageController {
 	public static class Config {
 		private Boolean statusGlobalProperties;
 		private Boolean statusIdentifierTypes;
-		private Boolean statusConfigForPrimaryCareModule;
 		private Boolean statusEncounterTypes;
 		private Boolean statusForms;
 		private Boolean statusProviderPrivileges;
@@ -109,12 +101,10 @@ public class  RHEAPoCConfiguratorManageController {
 		
 		
 		public Boolean getOverallStatus() {
-			if (statusGlobalProperties==null || statusIdentifierTypes==null || statusConfigForPrimaryCareModule==null ||
-				statusEncounterTypes==null || statusForms==null ||
-				statusProviderPrivileges==null)
+			if (statusGlobalProperties==null || statusIdentifierTypes==null ||
+				statusEncounterTypes==null || statusForms==null || statusProviderPrivileges==null)
 				return null;
-			return (statusGlobalProperties && statusIdentifierTypes && statusConfigForPrimaryCareModule &&
-				statusEncounterTypes && statusForms &&
+			return (statusGlobalProperties && statusIdentifierTypes && statusEncounterTypes && statusForms &&
 				statusProviderPrivileges);
 		}
 		
@@ -133,15 +123,6 @@ public class  RHEAPoCConfiguratorManageController {
 
 		public void setStatusIdentifierTypes(Boolean statusIdentifierTypes) {
 			this.statusIdentifierTypes = statusIdentifierTypes;
-		}
-
-		public Boolean getStatusConfigForPrimaryCareModule() {
-			return statusConfigForPrimaryCareModule;
-		}
-
-		public void setStatusConfigForPrimaryCareModule(
-				Boolean statusConfigForPrimaryCareModule) {
-			this.statusConfigForPrimaryCareModule = statusConfigForPrimaryCareModule;
 		}
 
 		public Boolean getStatusEncounterTypes() {
