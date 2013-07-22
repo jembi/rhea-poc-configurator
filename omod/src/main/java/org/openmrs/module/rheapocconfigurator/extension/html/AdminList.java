@@ -44,7 +44,7 @@ public class AdminList extends AdministrationSectionExt {
 	 */
 	public Map<String, String> getLinks() {
 		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
-		map.put("/module/rheapocconfigurator/manage.form", "rheapocconfigurator.manage");
+		map.put("/module/rheapocconfigurator/configureSystem.form", "rheapocconfigurator.configureSystem");
 		return map;
 	}
 	

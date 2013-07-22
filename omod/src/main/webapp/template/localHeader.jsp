@@ -5,10 +5,10 @@
 				code="admin.title.short" /></a></li>
 
 	<li
-		<c:if test='<%= request.getRequestURI().contains("/manage") %>'>class="active"</c:if>>
+		<c:if test='<%= request.getRequestURI().contains("/configureSystem") %>'>class="active"</c:if>>
 		<a
-		href="${pageContext.request.contextPath}/module/rheapocconfigurator/manage.form"><spring:message
-				code="rheapocconfigurator.manage" /></a>
+		href="${pageContext.request.contextPath}/module/rheapocconfigurator/configureSystem.form"><spring:message
+				code="rheapocconfigurator.configureSystem" /></a>
 	</li>
 	
 	<!-- Add further links here -->

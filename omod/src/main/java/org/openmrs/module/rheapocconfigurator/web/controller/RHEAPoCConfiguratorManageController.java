@@ -40,14 +40,14 @@ public class  RHEAPoCConfiguratorManageController {
 	
 	protected final Log log = LogFactory.getLog(getClass());
 	
-	@RequestMapping(value = "/module/rheapocconfigurator/manage", method = RequestMethod.GET)
+	@RequestMapping(value = "/module/rheapocconfigurator/configureSystem", method = RequestMethod.GET)
 	public void manage(ModelMap model) {
 		model.addAttribute("user", Context.getAuthenticatedUser());
 		if (model.get("config")==null)
 			model.put("config", new Config());
 	}
 	
-	@RequestMapping(value = "/module/rheapocconfigurator/manage", method = RequestMethod.POST)
+	@RequestMapping(value = "/module/rheapocconfigurator/configureSystem", method = RequestMethod.POST)
 	public ModelAndView runConfigurator(HttpServletRequest request, HttpServletResponse response, @ModelAttribute("config") Config config, BindingResult errors) {
 		RHEAPoCConfiguratorService cs = Context.getService(RHEAPoCConfiguratorService.class);
 		
@@ -87,7 +87,7 @@ public class  RHEAPoCConfiguratorManageController {
 			}
 		}
 		
-		return new ModelAndView("redirect:manage.form");
+		return new ModelAndView("redirect:configureSystem.form");
 	}
 	
 	public static class Config {
