@@ -273,20 +273,22 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 		try {
 			for (FormMetadata fm : FORMS) {
 				Form form = fs.getForm(fm.name);
-				if (form!=null)
-					continue;
+				HtmlForm htmlForm = new HtmlForm();
+				if (form==null) {
+					form = new Form();
+				} else {
+					htmlForm = hfes.getHtmlFormByForm(form);
+				}
 				
 				InputStream file = getClass().getClassLoader().getResourceAsStream(fm.file);
 				StringWriter sw = new StringWriter();
 				IOUtils.copy(file, sw);
-				form = new Form();
 				form.setName(fm.name);
 				form.setVersion(fm.version);
 				form.setPublished(true);
 				form.setEncounterType(es.getEncounterType(fm.encounterType));
 				fs.saveForm(form);
 				
-				HtmlForm htmlForm = new HtmlForm();
 				htmlForm.setForm(form);
 				htmlForm.setDescription(fm.name);
 				htmlForm.setName(fm.name);
