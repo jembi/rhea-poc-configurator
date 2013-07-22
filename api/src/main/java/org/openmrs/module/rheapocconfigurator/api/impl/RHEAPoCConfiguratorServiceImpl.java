@@ -217,8 +217,7 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 				as.saveGlobalProperty(new GlobalProperty("registration.primaryIdentifierType", pit.getId().toString()));
 			}
 			
-			//TODO
-			//registration.otherIdentifierTypes = check the database to determine the ID of all identifiers that can be searched against.
+			as.saveGlobalProperty(new GlobalProperty("registration.otherIdentifierTypes", getAllIdentifierTypeIDsAsString()));
 		} catch (APIException ex) {
 			log.error("Failed to setup global properties", ex);
 			return false;
@@ -227,6 +226,21 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 		return true;
 	}
 	
+	private String getAllIdentifierTypeIDsAsString() {
+		StringBuilder res = new StringBuilder();
+		boolean first = true;
+		
+		for (PatientIdentifierType pid : Context.getPatientService().getAllPatientIdentifierTypes()) {
+			if (!first) {
+				res.append(",");
+			} else {
+				first = false;
+			}
+			res.append(pid.getId());
+		}
+		
+		return res.toString();
+	}
 
 	@Override
 	public boolean setupEncounterTypes() {
