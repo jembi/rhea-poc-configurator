@@ -118,13 +118,12 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 		"View provider appointments"
 	};
 	private static final FormMetadata[] FORMS = new FormMetadata[]{
-		new FormMetadata("RHEA ANC 1: OB and Past Medical History", "1.0", ENCOUNTER_TYPES[0], "RHEA OB and Past Medical History"),
-		new FormMetadata("RHEA ANC 2: Physical", "1.0", ENCOUNTER_TYPES[1], "RHEA ANC Physical"),
-		new FormMetadata("RHEA ANC 3: Testing", "1.0", ENCOUNTER_TYPES[2], "RHEA ANC Testing"),
-		new FormMetadata("RHEA ANC 4: Maternal Treatments and Interventions", "1.0", ENCOUNTER_TYPES[3], "RHEA Maternal Treatments and Interventions"),
-		new FormMetadata("RHEA ANC 5: Referral Form", "1.0", ENCOUNTER_TYPES[4], "RHEA Referral Form"),
-		new FormMetadata("RHEA ANC 6: Referral Confirmation Form", "1.0", ENCOUNTER_TYPES[5], "RHEA ANC Referral Confirmation Form"),
-		new FormMetadata("RHEA ANC 7: Delivery Report", "1.0", ENCOUNTER_TYPES[6], "RHEA ANC Delivery Report")
+		new FormMetadata("RHEA ANC 1: OB and Past Medical History", "1.0", ENCOUNTER_TYPES[0], "ANC Past Medical History.html"),
+		new FormMetadata("RHEA ANC 2: Physical", "1.0", ENCOUNTER_TYPES[1], "ANC Physical Examination.html"),
+		new FormMetadata("RHEA ANC 3: Testing", "1.0", ENCOUNTER_TYPES[2], "ANC Investigation.html"),
+		new FormMetadata("RHEA ANC 4: Referral Form", "1.0", ENCOUNTER_TYPES[4], "ANC Referral Form.html"),
+		new FormMetadata("RHEA ANC 5: Referral Confirmation Form", "1.0", ENCOUNTER_TYPES[5], "ANC Referral Confirmation Form.html"),
+		new FormMetadata("RHEA ANC 6: Delivery Report", "1.0", ENCOUNTER_TYPES[6], "ANC Delivery Report.html")
 	};
 	private static final GlobalProperty[] GLOBAL_PROPERTIES = new GlobalProperty[]{
 		new GlobalProperty("registration.barCodeCount", "4"),

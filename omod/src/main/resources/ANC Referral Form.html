@@ -30,6 +30,14 @@
     </code>
 
 </translations>
+<script type="text/javascript">       
+ var $ = jQuery.noConflict();
+ $j(document).ready(function(){
+    //$("#location select").attr("disabled",true); 
+    
+
+});
+</script>
 <macros> 
 paperFormId = (Fill this in) 
 headerColor =#009d8e
@@ -58,7 +66,7 @@ table.baseline-aligned td {
 </style>
 
 <span style="float: right">Paper Form ID: $paperFormId</span>
-<h2>RHEA Referral Form (v1.0)</h2>
+<h2>ANC Referral Form(v1.0)</h2>
 <includeIf velocityTest="$patient.gender == 'F' ">
 <section headerLabel="1. Encounter Details">
 	<table class="baseline-aligned">
@@ -67,13 +75,13 @@ table.baseline-aligned td {
 			<td><encounterDate default="today" /></td>
 		</tr>
 		<tr>
-			<td>Location:</td>
-			<td><encounterLocation default="GlobalProperty:registration.defaultLocationCode"/></td>
-		</tr>
-		<tr>
-			<td>Provider:</td>
-			<td><encounterProvider default="currentUser"/></td>
-		</tr>
+				<td>Location:</td>
+				<td><encounterLocation id="location" default="GlobalProperty:registration.defaultLocationCode"/></td>
+			</tr>
+			<tr>
+				<td>Provider:</td>
+				<td><encounterProvider id="provider" /></td>
+			</tr>
 	</table>
 </section>
 

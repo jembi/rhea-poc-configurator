@@ -13,7 +13,7 @@
         <variant locale="fr" value="Score d'Apgar à 1 minute"/>
     </code>
 <code name="apgar5">
-        <variant locale="en" value="Apgar Score at 1 Minutes"/>
+        <variant locale="en" value="Apgar Score at 5 Minutes"/>
         <variant locale="fr" value="Score d'Apgar à 5 minute"/>
     </code>
 <code name="circumfrence">
@@ -40,10 +40,14 @@
         <variant locale="en" value="Delivery outcome"/>
         <variant locale="fr" value="Delivery outcome"/>
     </code>
+<code name="multiple_birth">
+        <variant locale="en" value="Is this a multiple birth"/>
+        <variant locale="fr" value="Is this a multiple birth"/>
+    </code>
 <code name="Yes">
         <variant locale="en" value="Yes"/>
         <variant locale="fr" value="Oui"/>
-    </code>
+ </code>
 <code name="No">
         <variant locale="en" value="No"/>
         <variant locale="fr" value="Non"/>
@@ -51,7 +55,19 @@
 <code name="outcome">
         <variant locale="en" value="Maternal Outcome"/>
         
-    </code>
+</code>
+<code name="svg">
+        <variant locale="en" value="Spontaneous vaginal delivery"/>
+        <variant locale="fr" value="Accouchement vaginal spontané"/>
+ </code>
+<code name="csection">
+        <variant locale="en" value="Cesarean section"/>
+        <variant locale="fr" value="Césarienne"/>
+ </code>
+<code name="breech">
+        <variant locale="en" value="Breech delivery"/>
+        <variant locale="fr" value="Accouchement par le siège"/>
+ </code>
 <code name="perinium">
         <variant locale="en" value="Perineum status"/>
         <variant locale="fr" value="État du périnée"/>
@@ -66,7 +82,7 @@
     </code>
     <code name="mode">
         <variant locale="en" value="Mode of Delivery"/>
-        <variant locale="fr" value="MÉTHODE D'ACCOUCHEMENT"/>
+        <variant locale="fr" value="Mèthode d'accouchment"/>
     </code>
     <code name="location">
         <variant locale="en" value="Birth location"/>
@@ -77,7 +93,29 @@
         <variant locale="fr" value="Est-ce que la naissance était en présence d'un agent de santé"/>
     </code>
 </translations>
+<script type="text/javascript">       
+ var $ = jQuery.noConflict();
+ $j(document).ready(function(){
+    //$("#location select").attr("disabled",true); 
+    $('#twin').hide();
+    //$("#provider select").attr("disabled",true);
+    $("#multiple_birth_check").change(function() {
+                
+    		if($('#multiple_birth_check input:nth(0)').is(':checked'))
+                      {
+                            $('#twin').show();
+                            //alert("changed");
+                      }
+                
+                 else{
+                     $('#twin').hide();
+                     }
+                
+                   
+    	}); 
 
+});
+</script>
 <macros>
  paperFormId = (Fill this in) 
 headerColor =#009d8e
@@ -106,7 +144,7 @@ table.baseline-aligned td {
 </style>
 
 <span style="float: right">Paper Form ID: $paperFormId</span>
-<h2>RHEA ANC Delivery Report (v1.0)</h2>
+<h2>ANC Delivery Report (v1.0)</h2>
 <includeIf velocityTest="$patient.gender == 'F' ">
 <section headerLabel="1. Encounter Details">
 	<table class="baseline-aligned">
@@ -115,24 +153,21 @@ table.baseline-aligned td {
 			<td><encounterDate default="today" /></td>
 		</tr>
 		<tr>
-			<td>Location:</td>
-			<td><encounterLocation default="GlobalProperty:registration.defaultLocationCode"/></td>
-		</tr>
-		<tr>
-			<td>Provider:</td>
-			<td><encounterProvider default="currentUser"/></td>
-		</tr>
+				<td>Location:</td>
+				<td><encounterLocation id="location" default="GlobalProperty:registration.defaultLocationCode"/></td>
+			</tr>
+			<tr>
+				<td>Provider:</td>
+				<td><encounterProvider id="provider" /></td>
+			</tr>
 	</table>
 </section>
 
 
 <section headerLabel="2. Delivery Information">
-	<fieldset>
-		<legend>
-			<b>Mother/Mère</b>
-		</legend>
-		<table class="baseline-aligned">
-			<tr>
+	<section headerLabel="Mother/Mère">
+	<table class="baseline-aligned">
+		<tr>
 				
 				<td><obs conceptId="5599" labelCode="del_date"/></td>
 			</tr>
@@ -140,19 +175,19 @@ table.baseline-aligned td {
 				
 				<td><obs conceptId="5630" answerConceptIds="1170,1171,1172"
 						
-						style="radio" labelCode="mode" /></td>
+						answerCodes="svg,csection,breech" style="radio" labelCode="mode" /></td>
 			</tr>
 			<tr>
 				
-				<td><obs conceptId="3528" answerConceptIds="3566,2070,3527,1067"  style="radio" labelCode="location"/></td>
+				<td><obs conceptId="3528" answerConceptIds="3566,2070,3527,1067" answerLabels="Health Center,Hospital,Home,Unknown" style="radio" labelCode="location"/></td>
 			</tr>
 			<tr>
 				
-				<td><obs conceptId="8176" answerConceptIds="8175,8173,8174,8172,1107" style="radio" labelCode="health worker"/></td>
+				<td><obs conceptId="8176" answerConceptIds="8175,8173,8174,8172,1107" answerLabels="Doctor,Nurse,Midwife,Skilled health worker,None" style="radio" labelCode="health worker"/></td>
 			</tr>
 			<tr>
 				
-				<td><obs conceptId="8163" answerConceptIds="8162,1742,6401" style="radio" labelCode="outcome"/></td>
+				<td><obs conceptId="8163" answerConceptIds="8162,1742,6401" answerLabels="Stable,Patient died,Referred from another site" style="radio" labelCode="outcome"/></td>
 			</tr>
 
 			<tr>
@@ -163,22 +198,23 @@ table.baseline-aligned td {
 				
 				<td><obs conceptId="8191" style="radio" labelCode="blood_loss"/></td>
 			</tr>
-		</table>
-	</fieldset>
-	<fieldset>
-		<legend>
-			<b>Child/Enfant</b>
-		</legend>
-		<table class="baseline-aligned">
+	</table>
+</section>
+<section headerLabel="Child/Enfant">
+	<table class="baseline-aligned">
+		<!-- <tr>
+ <td><obs conceptId="9621" answerConceptIds="1065,1066" answerCodes="Yes,No" style="radio" labelCode="multiple_birth" id="multiple_birth_check"/></td>
+
+			</tr> -->
 
 			<tr>
- <td><obs conceptId="8161" answerConceptIds="6543,6544"  style="radio" labelCode="Delivery Outcome"/></td>
+ <td><obs conceptId="8161" answerConceptIds="6543,6544"  answerLabels="Born alive,Born dead" style="radio" labelCode="Delivery Outcome"/></td>
 
 			</tr>
 
 			<tr>
 				
-<td><obs conceptId="8160" answerConceptIds="2843,2844,1067"  style="radio" labelCode="sex"/></td></tr>
+<td><obs conceptId="8160" answerConceptIds="2843,2844,1067" answerLabels="Male,Female,Unknown" style="radio" labelCode="sex"/></td></tr>
 			<tr>
 				
 				<td><obs conceptId="8177" style="radio" labelCode="state"/></td>
@@ -211,10 +247,9 @@ table.baseline-aligned td {
 				
 				<td><obs conceptId="8510" rows="5" cols="30" labelCode="describe"/></td>
 			</tr>
-
-		</table>
-	</fieldset>
-
+	</table>
+</section>
+	
 </section>
 
 <submit /> 
