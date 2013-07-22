@@ -20,6 +20,7 @@
 		<require_module>org.openmrs.module.rheapocadapter</require_module>
 		<require_module>org.openmrs.module.rwandaprimarycare</require_module>
 		<require_module>org.openmrs.module.maternalsummary</require_module>
+		<require_module>org.openmrs.module.hiepatientsearch</require_module>
 	</require_modules>
 
 	
