@@ -9,6 +9,7 @@ It performs configuration for the following RHIE modules:
 and also has dependency on:
 * Maternal Summary (https://github.com/jembi/rhea-maternal-summary)
 * Patient Search Extension (https://github.com/jembi/openmrs-module-patientsearch-ext)
+* htmlformentry 2.0.1
 
 Usage
 -----
