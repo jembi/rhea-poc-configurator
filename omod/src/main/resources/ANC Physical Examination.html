@@ -119,13 +119,33 @@
         <variant locale="fr" value="Rythme cardiaque foetal"/>
     </code>
     <code name="baby_moving">
-        <variant locale="en" value="Is Baby Moving"/>
-        <variant locale="fr" value="Is Baby Moving"/>
+        <variant locale="en" value="Is The Baby Moving"/>
+        <variant locale="fr" value="Est-ce que le bébé bouge"/>
     </code>
     <code name="fundal_check">
         <variant locale="en" value="Does Fundal Height Match gestational age"/>
-        <variant locale="fr" value="Does Fundal Height Match gestational age"/>
+        <variant locale="fr" value="Est-ce que l'Hauteur Utérine équivalent á l'age de la grossesse"/>
     </code>
+	<code name="encounterDetails">
+		<variant locale="en" value="1. Encounter Details"/>
+		<variant locale="fr" value="1. Rencontrer les détails"/>
+	</code>
+	<code name="physicalExams">
+		<variant locale="en" value="2. Physical Exams"/>
+		<variant locale="fr" value="2. Examens physiques"/>
+	</code>
+	<code name="ANCcomplications">
+		<variant locale="en" value="ANC complications"/>
+		<variant locale="fr" value="Complications de la CPN"/>
+	</code>
+	<code name="nineMonthANC">
+		<variant locale="en" value="Nine Month ANC (Filled For Final ANC Visit Only) "/>
+		<variant locale="fr" value="CPN au Neuvième Mois (A remplir seulement lors de la derniere visite de la CPN)"/>
+	</code>
+	<code name="returnVisitDate">
+		<variant locale="en" value="Return Visit Date"/>
+		<variant locale="fr" value="Date du Rendez-vous prochain"/>
+	</code>
 </translations>
 <script type="text/javascript">
 if(jQuery){
@@ -505,7 +525,7 @@ table.baseline-aligned td {
 <span style="float: right">Paper Form ID: $paperFormId</span>
 <h2>ANC Physical Examination (v1.0)</h2>
 <includeIf velocityTest="$patient.gender == 'F' ">
-    <section headerLabel="1. Encounter Details">
+    <section headerCode="encounterDetails">
        <table class="baseline-aligned">
           <tr>
              <td>Date:</td>
@@ -523,7 +543,7 @@ table.baseline-aligned td {
 </section>
 <section>
     <section
-    headerLabel="2. Physical Exams">
+    headerCode="physicalExams">
     <table class="baseline-aligned">
 
      <tr>
@@ -613,7 +633,7 @@ table.baseline-aligned td {
 
     </section>
     <section
-    headerLabel="ANC complications/Complications de la CPN">
+    headerCode="ANCcomplications">
 
     <table class="baseline-aligned checkboxGroup risks">
       <tr>
@@ -654,7 +674,7 @@ table.baseline-aligned td {
                 
 
                                 <section
-                                headerLabel="Nine Month ANC (Filled For Final ANC Visit Only) ">
+                                headerCode="nineMonthANC">
                                 <table class="baseline-aligned">
     <!--<tr>
         <td>Presentation (how is the child positioned in the womb):</td>
@@ -681,10 +701,10 @@ table.baseline-aligned td {
                     </table>
                 </section>   
                 <section
-                headerLabel="Return Visit Date">
+                headerCode="returnVisitDate">
                 <table class="baseline-aligned">
                     <tr>
-                        <td>Return Visit Date: <obs conceptId="5096" id="return date" allowFutureDates="true" /></td>
+                        <td>Return Visit Date/Date du Rendez-vous prochain: <obs conceptId="5096" id="return date" allowFutureDates="true" /></td>
 
                     </tr>
 

@@ -25,9 +25,9 @@
 		<variant locale="en" value="Small Pelvis"/>
 		<variant locale="fr" value="Petit bassin"/>
 	</code>
-	<code name="Number of Births">
+	<code name="numberOfBirths">
 		<variant locale="en" value="Number of Births"/>
-
+		<variant locale="fr" value="Nombre des naissances"/>
 	</code>
 	<code name="Loss of Conciousness While Pregnant or When Giving Birth">
 		<variant locale="en" value="Loss of Conciousness While Pregnant or When Giving Birth"/>
@@ -143,7 +143,7 @@
 	</code>
 	<code name="placenta">
 		<variant locale="en" value="Incomplete Placenta"/>
-		<variant locale="fr" value="Incomplete Placenta"/>
+		<variant locale="fr" value="Placenta incomplet"/>
 	</code>
 	<code name="hypertension">
 		<variant locale="en" value="Hypertension"/>
@@ -156,6 +156,26 @@
 	<code name="fibroids">
 		<variant locale="en" value="Uterine Fibroids"/>
 		<variant locale="fr" value="Les fibromes utérins"/>
+	</code>
+	<code name="encounterDetails">
+		<variant locale="en" value="1. Encounter Details"/>
+		<variant locale="fr" value="1. Rencontrer les détails"/>
+	</code>
+	<code name="obInformation">
+		<variant locale="en" value="2. OB Information"/>
+		<variant locale="fr" value="2. Information obstétrique"/>
+	</code>
+	<code name="obstetricalRiskFactors">
+		<variant locale="en" value="Obstetrical risk factors"/>
+		<variant locale="fr" value="Facteurs de risque obstétricaux"/>
+	</code>
+	<code name="medicalConditions">
+		<variant locale="en" value="Medical Conditions"/>
+		<variant locale="fr" value="Conditions médicales"/>
+	</code>
+	<code name="medicalDates">
+		<variant locale="en" value="Medical Dates"/>
+		<variant locale="fr" value="Dates médicaux"/>
 	</code>
 </translations>
 <script type="text/javascript">
@@ -288,7 +308,7 @@ table.baseline-aligned td {
 <span style="float: right">Paper Form ID: $paperFormId</span>
 <h2>ANC Past Medical History (v1.0)</h2>
 <includeIf velocityTest="$patient.gender == 'F' ">
-	<section headerLabel="1. Encounter Details">
+	<section headerCode="encounterDetails">
 		<table class="baseline-aligned">
 			<tr>
 				<td>Date:</td>
@@ -307,7 +327,7 @@ table.baseline-aligned td {
 
 	
 	<section >
-		<section headerLabel="2. OB Information">
+		<section headerCode="obInformation">
 			<table class="baseline-aligned">
 				<!--<tr>
 
@@ -316,7 +336,7 @@ table.baseline-aligned td {
 					</tr>-->
 					<tr>
 
-						<td><obs conceptId="5090" id="height" labelCode="height"/></td>
+						<td><obs conceptId="5090" id="height" labelCode="height"/>(cm)</td>
 					</tr>
 
 					<tr>
@@ -328,7 +348,7 @@ table.baseline-aligned td {
 					</tr>
 					<tr>
 
-						<td><obs conceptId="1053" labelCode="Number Of Births"/></td>
+						<td><obs conceptId="1053" labelCode="numberOfBirths"/></td>
 					</tr>
 
 					<tr>
@@ -376,7 +396,7 @@ table.baseline-aligned td {
 
 					</table>
 				</section>
-				<section headerLabel=" Obstetrical risk factors/Facteurs de risque obstétricaux">
+				<section headerCode="obstetricalRiskFactors">
 					<table class="baseline-aligned risks">
 						<tr>
 							<td><obs conceptId="8534" answerConceptId="8527"
@@ -422,7 +442,7 @@ table.baseline-aligned td {
 
 	</table>
 </section>
-<section headerLabel=" Medical Conditions/Conditions médicales">
+<section headerCode="medicalConditions">
 	<table class="baseline-aligned">
 		<tr>
 			<td><obs conceptId="8505" answerConceptId="3305"
@@ -454,7 +474,7 @@ table.baseline-aligned td {
 
 							</table>
 						</section>
-						<section headerLabel=" Medical Dates">
+						<section headerCode="medicalDates">
 							<table class="baseline-aligned">
 								<tr>
 

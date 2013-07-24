@@ -104,7 +104,7 @@
 	</code>
 	<code name="Was her patner treated for syphilis?">
 		<variant locale="en" value="Was he (partner) treated for syphilis?"/>
-		<variant locale="fr" value="Est-ce que le partenaire a Ã©tÃ© soigne du syphilis?"/>
+		<variant locale="fr" value="Est-ce que le partenaire a été soigne du syphilis?"/>
 	</code>
 	<code name="HIV test date">
 		<variant locale="en" value="HIV test date"/>
@@ -144,7 +144,7 @@
 	</code>
 	<code name="Was she treated for syphilis?">
 		<variant locale="en" value="Was she treated for syphilis?"/>
-		<variant locale="fr" value="Est-ce qu'elle a Ã©tÃ© soignee du syphilis?"/>
+		<variant locale="fr" value="Est-ce qu'elle a été soignee du syphilis?"/>
 	</code>
 	<code name="Urinary Albumin">
 		<variant locale="en" value="Urinary Albumin:"/>
@@ -157,6 +157,26 @@
 	<code name="shared">
 		<variant locale="en" value="Have you disclosed your HIV status to your partner:"/>
 		<variant locale="fr" value="Avez-vous revele votre etat VIH a votre partenaire?:"/>
+	</code>
+	<code name="encounterDetails">
+		<variant locale="en" value="1. Encounter Details"/>
+		<variant locale="fr" value="1. Rencontrer les détails"/>
+	</code>
+	<code name="testing">
+		<variant locale="en" value="2. Testing"/>
+		<variant locale="fr" value="2. Tests"/>
+	</code>
+	<code name="mother">
+		<variant locale="en" value="Mother"/>
+		<variant locale="fr" value="Mère"/>
+	</code>
+	<code name="partnerHeader">
+		<variant locale="en" value="Partner"/>
+		<variant locale="fr" value="Partenaire"/>
+	</code>
+	<code name="treatmentsHeader">
+		<variant locale="en" value="Treatments &amp; Interventions"/>
+		<variant locale="fr" value="Traitements et des interventions"/>
 	</code>
 
 </translations>
@@ -198,7 +218,7 @@ table.baseline-aligned td {
 <span style="float: right">Paper Form ID: $paperFormId</span>
 <h2>ANC Investigation (v1.0)</h2>
 <includeIf velocityTest="$patient.gender == 'F' ">
-	<section headerLabel="1. Encounter Details">
+	<section headerCode="encounterDetails">
 		<table class="baseline-aligned">
 			<tr>
 				<td>Date:</td>
@@ -215,10 +235,10 @@ table.baseline-aligned td {
 		</table>
 	</section>
 
-	<section headerLabel="2. Testing" id ="cont">
+	<section headerCode="testing" id ="cont">
 
 		<section
-		headerLabel="Mother/Mere">
+		headerCode="mother">
 		<table class="baseline-aligned">
 			<tr>
 
@@ -273,7 +293,7 @@ table.baseline-aligned td {
 				</table>
 			</section>
 			<section
-			headerLabel="Partner/Partenaire">
+			headerCode="partnerHeader">
 			<table class="baseline-aligned" >
 				<tr>
 
@@ -307,7 +327,7 @@ table.baseline-aligned td {
 
 					</table>
 				</section>
-				<section headerLabel="Treatments &amp; Interventions">
+				<section headerCode="treatmentsHeader">
 					<table class="baseline-aligned">
 						<tr>
 							<td><obs conceptId="8538" answerConceptIds="1065,1066,8165" answerCodes="Yes,No,Not Sure"

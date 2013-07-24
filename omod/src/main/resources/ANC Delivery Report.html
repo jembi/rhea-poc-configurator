@@ -38,7 +38,7 @@
     </code>
 <code name="del_outcome">
         <variant locale="en" value="Delivery outcome"/>
-        <variant locale="fr" value="Delivery outcome"/>
+        <variant locale="fr" value="Etat de l'enfant aprés accouchement"/>
     </code>
 <code name="multiple_birth">
         <variant locale="en" value="Is this a multiple birth"/>
@@ -54,6 +54,7 @@
     </code>
 <code name="outcome">
         <variant locale="en" value="Maternal Outcome"/>
+        <variant locale="fr" value="Etat de la mère après accouchement"/>
         
 </code>
 <code name="svg">
@@ -92,6 +93,86 @@
         <variant locale="en" value="Was the birth attended by a health worker?"/>
         <variant locale="fr" value="Est-ce que la naissance était en présence d'un agent de santé"/>
     </code>
+	<code name="encounterDetails">
+		<variant locale="en" value="1. Encounter Details"/>
+		<variant locale="fr" value="1. Rencontrer les détails"/>
+	</code>
+	<code name="deliveryInformation">
+		<variant locale="en" value="2. Delivery Information"/>
+		<variant locale="fr" value="2. Information de l'accouchement"/>
+	</code>
+	<code name="mother">
+		<variant locale="en" value="Mother"/>
+		<variant locale="fr" value="Mère"/>
+	</code>
+	<code name="child">
+		<variant locale="en" value="Child"/>
+		<variant locale="fr" value="Enfant"/>
+	</code>
+	<code name="healthCenter">
+		<variant locale="en" value="Health Center"/>
+		<variant locale="fr" value="Centre de santé"/>
+	</code>
+	<code name="hospital">
+		<variant locale="en" value="Hospital"/>
+		<variant locale="fr" value="Hôpital"/>
+	</code>
+	<code name="home">
+		<variant locale="en" value="Home"/>
+		<variant locale="fr" value="Maison"/>
+	</code>
+	<code name="unknown">
+		<variant locale="en" value="Unknown"/>
+		<variant locale="fr" value="Inconnue"/>
+	</code>
+	<code name="doctor">
+		<variant locale="en" value="Doctor"/>
+		<variant locale="fr" value="Médecin"/>
+	</code>
+	<code name="nurse">
+		<variant locale="en" value="Nurse"/>
+		<variant locale="fr" value="Infirmière"/>
+	</code>
+	<code name="midwife">
+		<variant locale="en" value="Midwife"/>
+		<variant locale="fr" value="Sage-femme"/>
+	</code>
+	<code name="healthWorker">
+		<variant locale="en" value="Skilled health worker"/>
+		<variant locale="fr" value="Travailleur de la santé"/>
+	</code>
+	<code name="none">
+		<variant locale="en" value="None"/>
+		<variant locale="fr" value="Aucun"/>
+	</code>
+	<code name="stable">
+		<variant locale="en" value="Stable"/>
+		<variant locale="fr" value="Stable"/>
+	</code>
+	<code name="patientDied">
+		<variant locale="en" value="Patient died"/>
+		<variant locale="fr" value="Patient est décédé"/>
+	</code>
+	<code name="referred">
+		<variant locale="en" value="Referred from another site"/>
+		<variant locale="fr" value="Transférée depuis un autre site"/>
+	</code>
+	<code name="bornAlive">
+		<variant locale="en" value="Born alive"/>
+		<variant locale="fr" value="Vivant"/>
+	</code>
+	<code name="stillborn">
+		<variant locale="en" value="Stillborn"/>
+		<variant locale="fr" value="Mort-né"/>
+	</code>
+	<code name="male">
+		<variant locale="en" value="Male"/>
+		<variant locale="fr" value="Homme"/>
+	</code>
+	<code name="female">
+		<variant locale="en" value="Female"/>
+		<variant locale="fr" value="Femme"/>
+	</code>
 </translations>
 <script type="text/javascript">       
  var $ = jQuery.noConflict();
@@ -146,7 +227,7 @@ table.baseline-aligned td {
 <span style="float: right">Paper Form ID: $paperFormId</span>
 <h2>ANC Delivery Report (v1.0)</h2>
 <includeIf velocityTest="$patient.gender == 'F' ">
-<section headerLabel="1. Encounter Details">
+<section headerCode="encounterDetails">
 	<table class="baseline-aligned">
 		<tr>
 			<td>Date:</td>
@@ -164,8 +245,8 @@ table.baseline-aligned td {
 </section>
 
 
-<section headerLabel="2. Delivery Information">
-	<section headerLabel="Mother/Mère">
+<section headerCode="deliveryInformation">
+	<section headerCode="mother">
 	<table class="baseline-aligned">
 		<tr>
 				
@@ -179,15 +260,15 @@ table.baseline-aligned td {
 			</tr>
 			<tr>
 				
-				<td><obs conceptId="3528" answerConceptIds="3566,2070,3527,1067" answerLabels="Health Center,Hospital,Home,Unknown" style="radio" labelCode="location"/></td>
+				<td><obs conceptId="3528" answerConceptIds="3566,2070,3527,1067" answerCodes="healthCenter,hospital,home,unknown" style="radio" labelCode="location"/></td>
 			</tr>
 			<tr>
 				
-				<td><obs conceptId="8176" answerConceptIds="8175,8173,8174,8172,1107" answerLabels="Doctor,Nurse,Midwife,Skilled health worker,None" style="radio" labelCode="health worker"/></td>
+				<td><obs conceptId="8176" answerConceptIds="8175,8173,8174,8172,1107" answerCodes="doctor,nurse,midwife,healthWorker,none" style="radio" labelCode="health worker"/></td>
 			</tr>
 			<tr>
 				
-				<td><obs conceptId="8163" answerConceptIds="8162,1742,6401" answerLabels="Stable,Patient died,Referred from another site" style="radio" labelCode="outcome"/></td>
+				<td><obs conceptId="8163" answerConceptIds="8162,1742,6401" answerCodes="stable,patientDied,referred" style="radio" labelCode="outcome"/></td>
 			</tr>
 
 			<tr>
@@ -200,7 +281,7 @@ table.baseline-aligned td {
 			</tr>
 	</table>
 </section>
-<section headerLabel="Child/Enfant">
+<section headerCode="child">
 	<table class="baseline-aligned">
 		<!-- <tr>
  <td><obs conceptId="9621" answerConceptIds="1065,1066" answerCodes="Yes,No" style="radio" labelCode="multiple_birth" id="multiple_birth_check"/></td>
@@ -208,13 +289,13 @@ table.baseline-aligned td {
 			</tr> -->
 
 			<tr>
- <td><obs conceptId="8161" answerConceptIds="6543,6544"  answerLabels="Born alive,Born dead" style="radio" labelCode="Delivery Outcome"/></td>
+ <td><obs conceptId="8161" answerConceptIds="6543,6544"  answerCodes="bornAlive,stillborn" style="radio" labelCode="del_outcome"/></td>
 
 			</tr>
 
 			<tr>
 				
-<td><obs conceptId="8160" answerConceptIds="2843,2844,1067" answerLabels="Male,Female,Unknown" style="radio" labelCode="sex"/></td></tr>
+<td><obs conceptId="8160" answerConceptIds="2843,2844,1067" answerCodes="male,female,unknown" style="radio" labelCode="sex"/></td></tr>
 			<tr>
 				
 				<td><obs conceptId="8177" style="radio" labelCode="state"/></td>

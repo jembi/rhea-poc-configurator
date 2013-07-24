@@ -8,6 +8,14 @@
         <variant locale="en" value="Referral Providers Comments"/>
         <variant locale="fr" value="Commentaires sur la visite du transfert"/>
     </code>
+	<code name="encounterDetails">
+		<variant locale="en" value="1. Encounter Details"/>
+		<variant locale="fr" value="1. Rencontrer les détails"/>
+	</code>
+	<code name="referralInformation">
+		<variant locale="en" value="2. Referral Information"/>
+		<variant locale="fr" value="2. Information du Transfert"/>
+	</code>
 </translations>
 <script type="text/javascript">       
  var $ = jQuery.noConflict();
@@ -46,7 +54,7 @@
 	<span style="float:right">Paper Form ID: $paperFormId</span>
 	<h2>ANC Referral Confirmation Form (v1.0)</h2>
         <includeIf velocityTest="$patient.gender == 'F' ">
-	<section headerLabel="1. Encounter Details">
+	<section headerCode="encounterDetails">
 		<table class="baseline-aligned">
 			<tr>
 				<td>Date:</td>
@@ -63,7 +71,7 @@
 		</table>
 	</section>
 
-	<section headerLabel="2. Referral Information">
+	<section headerCode="referralInformation">
 		<table class="baseline-aligned">
 			<tr>
 				
