@@ -71,6 +71,7 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 		"Add Encounters",
 		"Add Observations",
 		"Add People",
+		"Add Patients",
 		"Add Users",
 		"Can view a result of patient lab test",
 		"Delete Appointments",
@@ -78,6 +79,7 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 		"Edit FormEntry Archive",
 		"Edit FormEntry Queue",
 		"Edit People",
+		"Edit Patients",
 		"Edit Users",
 		"Exit a patient from care",
 		"Form Entry",
@@ -119,7 +121,9 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 		"View PMTCT",
 		"View Programs",
 		"View Unpublished Forms",
-		"View provider appointments"
+		"View provider appointments",
+		"Generate Batch of Identifiers",
+		"Manage Identifier Sources",
 	};
 	private static final FormMetadata[] FORMS = new FormMetadata[]{
 		new FormMetadata("RHEA ANC 1: Past Medical History", "1.0", ENCOUNTER_TYPES[0], "ANC Past Medical History.html"),
