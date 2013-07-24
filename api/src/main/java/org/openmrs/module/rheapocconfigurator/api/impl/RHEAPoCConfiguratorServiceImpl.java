@@ -21,6 +21,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.GlobalProperty;
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.Privilege;
 import org.openmrs.RelationshipType;
 import org.openmrs.Role;
@@ -29,6 +30,7 @@ import org.openmrs.api.AdministrationService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.FormService;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.PersonService;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
@@ -69,12 +71,14 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 		"Add Encounters",
 		"Add Observations",
 		"Add People",
+		"Add Users",
 		"Can view a result of patient lab test",
 		"Delete Appointments",
 		"Edit Appointments",
 		"Edit FormEntry Archive",
 		"Edit FormEntry Queue",
 		"Edit People",
+		"Edit Users",
 		"Exit a patient from care",
 		"Form Entry",
 		"Manage Implementation Id",
@@ -118,9 +122,9 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 		"View provider appointments"
 	};
 	private static final FormMetadata[] FORMS = new FormMetadata[]{
-		new FormMetadata("RHEA ANC 1: OB and Past Medical History", "1.0", ENCOUNTER_TYPES[0], "ANC Past Medical History.html"),
-		new FormMetadata("RHEA ANC 2: Physical", "1.0", ENCOUNTER_TYPES[1], "ANC Physical Examination.html"),
-		new FormMetadata("RHEA ANC 3: Testing", "1.0", ENCOUNTER_TYPES[2], "ANC Investigation.html"),
+		new FormMetadata("RHEA ANC 1: Past Medical History", "1.0", ENCOUNTER_TYPES[0], "ANC Past Medical History.html"),
+		new FormMetadata("RHEA ANC 2: Physical Examination", "1.0", ENCOUNTER_TYPES[1], "ANC Physical Examination.html"),
+		new FormMetadata("RHEA ANC 3: Investigation", "1.0", ENCOUNTER_TYPES[2], "ANC Investigation.html"),
 		new FormMetadata("RHEA ANC 4: Referral Form", "1.0", ENCOUNTER_TYPES[4], "ANC Referral Form.html"),
 		new FormMetadata("RHEA ANC 5: Referral Confirmation Form", "1.0", ENCOUNTER_TYPES[5], "ANC Referral Confirmation Form.html"),
 		new FormMetadata("RHEA ANC 6: Delivery Report", "1.0", ENCOUNTER_TYPES[6], "ANC Delivery Report.html")
@@ -179,6 +183,7 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 		
 		return true;
 	}
+	
 
 	/***
 	 * setupIdentifierTypes needs to run first!
@@ -335,6 +340,26 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 			return false;
 		}
 		
+		return true;
+	}
+	
+	@Override
+	public boolean setupProviderAttributes() {
+		PersonService ps = Context.getPersonService();
+		
+		try {
+			if (ps.getPersonAttributeTypeByName("NID")!=null)
+				return true;
+			
+			PersonAttributeType pat = new PersonAttributeType();
+			pat.setName("NID");
+			pat.setDescription("Rwandan national identifier");
+			pat.setFormat("java.lang.String");
+			ps.savePersonAttributeType(pat);
+		} catch (APIException ex) {
+			log.error("Failed to setup provider NID attribute", ex);
+			return false;
+		}
 		return true;
 	}
 	

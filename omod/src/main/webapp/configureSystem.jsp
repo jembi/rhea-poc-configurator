@@ -65,6 +65,15 @@
 					</c:choose>
 				</td>
 			</tr>
+			<tr>
+				<td>Provider Attributes</td>
+				<td>
+					<c:choose>
+						<c:when test="${config.statusProviderAttributes == true}"><img src="${pageContext.request.contextPath}/images/checkmark.png"/></c:when>
+						<c:otherwise><img src="${pageContext.request.contextPath}/images/error.gif"/></c:otherwise>
+					</c:choose>
+				</td>
+			</tr>
 		</table>
 	</c:otherwise>
 </c:choose>
