@@ -184,10 +184,12 @@ $j(this).children("#trigger").find(":checkbox:first").change(function(){
            var uncheckAll = function(){
                group.find("input[type$='checkbox']").attr("checked",false);
                group.find("input[type$='checkbox']").change();
+               document.getElementById('warningMissing').style.display = 'none'
            }
            var uncheckRadioAndAll = function(){
                group.find("#checkboxAll,#checkboxRadio").find("input[type$='checkbox']").attr("checked",false);
                group.find("#checkboxAll,#checkboxRadio").find("input[type$='checkbox']").change();
+               document.getElementById('warningMissing').style.display = 'none'
            }
 
 
@@ -491,6 +493,18 @@ $j(document).ready(function(){
 
 });
 </script>
+<script type="text/javascript">
+ var $ = jQuery.noConflict();
+ beforeSubmit.push(function(){
+    if($( "#checkboxCheckbox input:checked" ).length >0||$( "#checkboxAll input:checked" ).length>0){
+         return true;
+        }else{
+          document.getElementById('warningMissing').style.display = 'inline'
+          return false;
+        }
+});
+
+</script>
 <macros>
    paperFormId = (Fill this in) 
    headerColor =#009d8e
@@ -634,7 +648,7 @@ table.baseline-aligned td {
     </section>
     <section
     headerCode="ANCcomplications">
-
+    <span class="error" id="warningMissing" style="display: none;">Select at least one value / Sélectionner au moins une valeur</span>
     <table class="baseline-aligned checkboxGroup risks">
       <tr>
          <td id="checkboxAll"><obs conceptId="8156"
