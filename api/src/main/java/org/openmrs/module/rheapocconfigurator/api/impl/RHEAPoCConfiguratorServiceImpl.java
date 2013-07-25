@@ -124,6 +124,10 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 		"View provider appointments",
 		"Generate Batch of Identifiers",
 		"Manage Identifier Sources",
+		"View Patient Identifiers",
+		"View Providers",
+		"Manage Encounter Roles",
+		"View Visits",
 	};
 	private static final FormMetadata[] FORMS = new FormMetadata[]{
 		new FormMetadata("RHEA ANC 1: Past Medical History", "1.0", ENCOUNTER_TYPES[0], "ANC Past Medical History.html"),
