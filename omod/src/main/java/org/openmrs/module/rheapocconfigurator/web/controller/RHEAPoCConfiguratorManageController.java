@@ -93,6 +93,13 @@ public class  RHEAPoCConfiguratorManageController {
 				config.statusProviderAttributes = false;
 			}
 		}
+		if (config.statusVisitTypes == null || config.statusVisitTypes == false) {
+			try {
+				config.statusVisitTypes = cs.setupVisitTypes();
+			} catch (UnexpectedRollbackException ex) {
+				config.statusVisitTypes = false;
+			}
+		}
 		
 		return new ModelAndView("redirect:configureSystem.form");
 	}
@@ -104,16 +111,17 @@ public class  RHEAPoCConfiguratorManageController {
 		private Boolean statusForms;
 		private Boolean statusProviderPrivileges;
 		private Boolean statusProviderAttributes;
+		private Boolean statusVisitTypes;
 		
 		private GlobalPropertiesInput globalPropsInput = new GlobalPropertiesInput();
 		
 		
 		public Boolean getOverallStatus() {
-			if (statusGlobalProperties==null || statusIdentifierTypes==null ||
-				statusEncounterTypes==null || statusForms==null || statusProviderPrivileges==null || statusProviderAttributes==null)
+			if (statusGlobalProperties==null || statusIdentifierTypes==null || statusEncounterTypes==null || statusForms==null ||
+				statusProviderPrivileges==null || statusProviderAttributes==null || statusVisitTypes==null)
 				return null;
 			return (statusGlobalProperties && statusIdentifierTypes && statusEncounterTypes && statusForms &&
-				statusProviderPrivileges && statusProviderAttributes);
+				statusProviderPrivileges && statusProviderAttributes && statusVisitTypes);
 		}
 		
 
@@ -163,6 +171,14 @@ public class  RHEAPoCConfiguratorManageController {
 
 		public void setStatusProviderAttributes(Boolean statusProviderAttributes) {
 			this.statusProviderAttributes = statusProviderAttributes;
+		}
+
+		public Boolean getStatusVisitTypes() {
+			return statusVisitTypes;
+		}
+
+		public void setStatusVisitTypes(Boolean statusVisitTypes) {
+			this.statusVisitTypes = statusVisitTypes;
 		}
 
 		public GlobalPropertiesInput getGlobalPropsInput() {

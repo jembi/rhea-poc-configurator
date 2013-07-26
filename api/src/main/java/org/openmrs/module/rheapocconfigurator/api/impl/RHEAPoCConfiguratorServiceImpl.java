@@ -25,6 +25,7 @@ import org.openmrs.PersonAttributeType;
 import org.openmrs.Privilege;
 import org.openmrs.RelationshipType;
 import org.openmrs.Role;
+import org.openmrs.VisitType;
 import org.openmrs.api.APIException;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.EncounterService;
@@ -32,6 +33,7 @@ import org.openmrs.api.FormService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.UserService;
+import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.apache.commons.io.IOUtils;
@@ -152,6 +154,8 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 
 		new GlobalProperty("htmlformentry.dateFormat", "MM/dd/yyyy"),
 	};
+	private static final String VISIT_TYPE = "Primary Care Outpatient";
+	private static final String VISIT_DESCRIPTION = "Represents a single day primary care visit to a health center";
 	
 	protected final Log log = LogFactory.getLog(this.getClass());
 	
@@ -369,6 +373,24 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 			log.error("Failed to setup provider NID attribute", ex);
 			return false;
 		}
+		return true;
+	}
+	
+	@Override
+	public boolean setupVisitTypes() {
+		VisitService vs = Context.getVisitService();
+		try {
+			for (VisitType vt : vs.getAllVisitTypes()) {
+				if (VISIT_TYPE.equalsIgnoreCase(vt.getName()))
+					return true;
+			}
+			
+			vs.saveVisitType(new VisitType(VISIT_TYPE, VISIT_DESCRIPTION));
+		} catch (APIException ex) {
+			log.error("Failed to setup visit types", ex);
+			return false;
+		}
+		
 		return true;
 	}
 	

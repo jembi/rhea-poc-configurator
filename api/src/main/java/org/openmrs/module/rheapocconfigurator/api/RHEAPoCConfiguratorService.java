@@ -44,4 +44,6 @@ public interface RHEAPoCConfiguratorService extends OpenmrsService {
 	boolean setupProviderPrivileges();
 	@Authorized({PrivilegeConstants.MANAGE_PERSON_ATTRIBUTE_TYPES})
 	boolean setupProviderAttributes();
+	@Authorized({PrivilegeConstants.MANAGE_VISIT_TYPES})
+	boolean setupVisitTypes();
 }

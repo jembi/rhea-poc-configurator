@@ -74,6 +74,15 @@
 					</c:choose>
 				</td>
 			</tr>
+			<tr>
+				<td>Visit Types</td>
+				<td>
+					<c:choose>
+						<c:when test="${config.statusVisitTypes == true}"><img src="${pageContext.request.contextPath}/images/checkmark.png"/></c:when>
+						<c:otherwise><img src="${pageContext.request.contextPath}/images/error.gif"/></c:otherwise>
+					</c:choose>
+				</td>
+			</tr>
 		</table>
 	</c:otherwise>
 </c:choose>
