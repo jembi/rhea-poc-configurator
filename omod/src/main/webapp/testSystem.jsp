@@ -12,7 +12,7 @@
 	</c:when>
 	<c:otherwise>
 		<c:choose>
-			<c:when test="${config.overallStatus == true}">
+			<c:when test="${tests.overallStatus == true}">
 				<p>Testing successful. Yay!</p>
 			</c:when>
 			<c:otherwise>
@@ -29,6 +29,7 @@
 					</c:choose>
 				</td>
 			</tr>
+			<%--
 			<tr>
 				<td>Form Concepts Validation</td>
 				<td>
@@ -38,6 +39,7 @@
 					</c:choose>
 				</td>
 			</tr>
+			--%>
 		</table>
 	</c:otherwise>
 </c:choose>

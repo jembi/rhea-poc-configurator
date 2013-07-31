@@ -444,6 +444,22 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 	@Override
 	public ValidateFormsResult validateFormConcepts() {
 		ValidateFormsResult result = new ValidateFormsResult();
+		FormService fs = Context.getFormService();
+		HtmlFormEntryService hfes = Context.getService(HtmlFormEntryService.class);
+		
+		try {
+			for (FormMetadata fm : FORMS) {
+				Form form = fs.getForm(fm.name);
+				if (form==null) continue;
+				
+				HtmlForm htmlForm = hfes.getHtmlFormByForm(form);
+				if (htmlForm==null) continue;
+			}
+		} catch (APIException ex) {
+			log.error("Failed to setup forms", ex);
+			return null;
+		}
+        
 		return result;
 	}
 	
