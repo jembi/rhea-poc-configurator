@@ -12,6 +12,12 @@
 	</li>
 	
 	<!-- Add further links here -->
+	<li
+		<c:if test='<%= request.getRequestURI().contains("/testSystem") %>'>class="active"</c:if>>
+		<a
+		href="${pageContext.request.contextPath}/module/rheapocconfigurator/testSystem.form"><spring:message
+				code="rheapocconfigurator.testSystem" /></a>
+	</li>
 </ul>
 <h2>
 	<spring:message code="rheapocconfigurator.title" />

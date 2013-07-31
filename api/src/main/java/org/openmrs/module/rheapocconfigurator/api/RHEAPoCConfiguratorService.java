@@ -15,7 +15,9 @@ package org.openmrs.module.rheapocconfigurator.api;
 
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.rheapocconfigurator.AuthenticationTestInput;
 import org.openmrs.module.rheapocconfigurator.GlobalPropertiesInput;
+import org.openmrs.module.rheapocconfigurator.ValidateFormsResult;
 import org.openmrs.util.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,4 +48,7 @@ public interface RHEAPoCConfiguratorService extends OpenmrsService {
 	boolean setupProviderAttributes();
 	@Authorized({PrivilegeConstants.MANAGE_VISIT_TYPES})
 	boolean setupVisitTypes();
+	
+	boolean performAuthenticationTest(AuthenticationTestInput input);
+	ValidateFormsResult validateFormConcepts();
 }

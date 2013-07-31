@@ -41,7 +41,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.htmlformentry.HtmlForm;
 import org.openmrs.module.htmlformentry.HtmlFormEntryService;
+import org.openmrs.module.rheapocadapter.handler.ClientRegistryService;
+import org.openmrs.module.rheapocconfigurator.AuthenticationTestInput;
 import org.openmrs.module.rheapocconfigurator.GlobalPropertiesInput;
+import org.openmrs.module.rheapocconfigurator.ValidateFormsResult;
 import org.openmrs.module.rheapocconfigurator.api.RHEAPoCConfiguratorService;
 import org.openmrs.module.rheapocconfigurator.api.db.RHEAPoCConfiguratorDAO;
 
@@ -178,6 +181,7 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
     
 	@Override
 	public boolean setupIdentifierTypes() {
+		log.info("Setting up identifier types");
 		PatientService ps = Context.getPatientService();
 		
 		try {
@@ -203,6 +207,7 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 	 */
 	@Override
 	public boolean setupGlobalProperties(GlobalPropertiesInput input) {
+		log.info("Setting up global properties");
 		AdministrationService as = Context.getAdministrationService();
 		try {
 			for (GlobalProperty gp : GLOBAL_PROPERTIES) {
@@ -215,7 +220,7 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 			as.saveGlobalProperty(new GlobalProperty("scheduler.username", input.getSchedulerUsername()));
 			as.saveGlobalProperty(new GlobalProperty("scheduler.password", input.getSchedulerPassword()));
 			as.saveGlobalProperty(new GlobalProperty("registration.defaultLocationCode", input.getLocationID()));
-			as.saveGlobalProperty(new GlobalProperty("registration.rwandaLocationCodes", input.getLocationName() + ":" + input.getLocationID()));
+			as.saveGlobalProperty(new GlobalProperty("registration.rwandaLocationCodes", input.getLocationName() + ":" + input.getLocationFOSAID()));
 			as.saveGlobalProperty(new GlobalProperty("rheapocadapter.sendingFacility", input.getLocationFOSAID()));
 			
 			RelationshipType rs = Context.getPersonService().getRelationshipTypeByName("Parent/Child");
@@ -261,6 +266,7 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 
 	@Override
 	public boolean setupEncounterTypes() {
+		log.info("Setting up encounter types");
 		EncounterService es = Context.getEncounterService();
 		try {
 			for (String type : ENCOUNTER_TYPES) {
@@ -284,6 +290,7 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 	 */
 	@Override
 	public boolean setupForms() {
+		log.info("Setting up forms");
 		FormService fs = Context.getFormService();
 		EncounterService es = Context.getEncounterService();
 		HtmlFormEntryService hfes = Context.getService(HtmlFormEntryService.class);
@@ -333,6 +340,7 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 
 	@Override
 	public boolean setupProviderPrivileges() {
+		log.info("Setting up provider privileges");
 		UserService us = Context.getUserService();
 		try {
 			Role provider = us.getRole("Provider");
@@ -358,6 +366,7 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 	
 	@Override
 	public boolean setupProviderAttributes() {
+		log.info("Setting up provider attributes");
 		PersonService ps = Context.getPersonService();
 		
 		try {
@@ -378,6 +387,8 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 	
 	@Override
 	public boolean setupVisitTypes() {
+		log.info("Setting up visit types");
+		
 		VisitService vs = Context.getVisitService();
 		try {
 			for (VisitType vt : vs.getAllVisitTypes()) {
@@ -392,6 +403,48 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 		}
 		
 		return true;
+	}
+
+
+	@Override
+	public boolean performAuthenticationTest(AuthenticationTestInput input) {
+		log.info("Performing OpenHIM connection and authentication test");
+		
+		try {
+			ClientRegistryService crs = new ClientRegistryService();
+			String result = crs.getClient("NID-" + input.getTestPatientNID());
+			log.info("Response: " + result);
+			
+			if (result==null || result.isEmpty()) {
+				log.info("Authentication test failed");
+				return false;
+			}
+			
+			if (!containsPIDWithNID(result, input.getTestPatientNID())) {
+				log.info("Authentication test failed");
+				return false;
+			}
+			
+			log.info("Authentication test successful");
+			return true;
+		} catch (Exception ex) {
+			log.error("Authentication test failed");
+			log.error(ex);
+			return false;
+		}
+	}
+	
+	protected static boolean containsPIDWithNID(String adt_a05, String expectedNID) {
+		return adt_a05.replaceAll("\r", "").replaceAll("\n", "").matches(
+			".*<PID\\.3>(\\s*)<CX\\.1>" + expectedNID + "</CX\\.1>(\\s*)" +
+			"<CX\\.5>NID</CX\\.5>(\\s*)</PID\\.3>.*"
+		);
+	}
+
+	@Override
+	public ValidateFormsResult validateFormConcepts() {
+		ValidateFormsResult result = new ValidateFormsResult();
+		return result;
 	}
 	
 	
