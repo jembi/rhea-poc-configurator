@@ -16,6 +16,7 @@ package org.openmrs.module.rheapocconfigurator.api.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -436,7 +437,7 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 			return true;
 		} catch (Exception ex) {
 			log.error("Authentication test failed");
-			log.error(ex);
+			log.error("", ex);
 			return false;
 		}
 	}
@@ -471,20 +472,19 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 				}
 			}
 		} catch (APIException ex) {
-			log.error("Failed to setup forms", ex);
+			log.error("Failed to perform validation tests", ex);
 			result.setStatus(false);
 			return result;
 		}
         
 		if (result.getStatus()) {
-			log.error("Form concept validation successful");
+			log.info("Form concept validation successful");
 		} else {
-			log.error("Form concept validation failed");
+			log.info("Form concept validation failed");
 		}
-		if (!result.getErrors().isEmpty()) {
-			for (String error : result.getErrors()) {
-				log.info(error);
-			}
+		
+		for (String error : result.getErrors()) {
+			log.error(error);
 		}
 		
 		return result;
@@ -493,6 +493,9 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 	protected static List<Integer> getConceptIds(String formBody, ValidateFormsResult formsResult) {
 		List<Integer> result = new LinkedList<Integer>();
 		int i = 0;
+		
+		//remove all html comments
+		formBody = formBody.replaceAll("(?s)<!--.*?-->", "");
 		
 		while (i>=0 && i<formBody.length()) {
 			i = formBody.indexOf("<obs", i);
@@ -506,7 +509,7 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 						result.add(Integer.parseInt(conceptId));
 					} catch (NumberFormatException ex) {
 						//We won't set the result status to false. We'll rather treat this error as a warning.
-						formsResult.addError("Concept ID: " + conceptId + "\nWarning: Failed to parse");
+						formsResult.addError("(Concept ID: " + conceptId + ") Warning: Failed to parse");
 					}
 				}
 				i = j;
@@ -519,7 +522,7 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 	protected void validateConcept(Integer conceptId, Concept c, ValidateFormsResult result) {
 		if (c == null) {
 			result.setStatus(false);
-			result.addError("Concept ID: " + conceptId + "\nError: Unknown concept id");
+			result.addError("(Concept ID: " + conceptId + ") Error: Unknown concept id");
 		} else {
 			for (ConceptMap cm : c.getConceptMappings()) {
 				for (String mapping : RHIE_MAPPINGS) {
@@ -528,7 +531,7 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 				}
 			}
 			result.setStatus(false);
-			result.addError("Concept ID: " + conceptId + "\nError: No concept mappings found for any of " + RHIE_MAPPINGS);
+			result.addError("(Concept ID: " + conceptId + ") Error: No concept mappings found for any of " + Arrays.toString(RHIE_MAPPINGS));
 		}
 	}
 	

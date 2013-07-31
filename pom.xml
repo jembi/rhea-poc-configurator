@@ -4,7 +4,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>rheapocconfigurator</artifactId>
-	<version>1.1</version>
+	<version>1.2</version>
 	<packaging>pom</packaging>
 	<name>RHEA PoC Configurator Module</name>
 	<description>Sets up the config for a PoC system required for the Rwandan Health Information Exchange</description>

@@ -30,7 +30,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td>Form Concepts Validation</td>
+				<td>ANC Form Concepts Validation</td>
 				<td>
 					<c:choose>
 						<c:when test="${tests.statusFormsValidation == true}"><img src="${pageContext.request.contextPath}/images/checkmark.png"/></c:when>
@@ -38,6 +38,14 @@
 					</c:choose>
 				</td>
 			</tr>
+			<c:if test="${tests.statusFormsValidation == false}">
+				<c:forEach var="error" items="${tests.statusFormsValidationErrors}">
+					<tr>
+						<td></td>
+						<td>${error}</td>
+					</tr>
+				</c:forEach>
+			</c:if>
 		</table>
 	</c:otherwise>
 </c:choose>

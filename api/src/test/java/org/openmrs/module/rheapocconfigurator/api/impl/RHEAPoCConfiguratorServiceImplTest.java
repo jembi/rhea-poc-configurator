@@ -613,7 +613,6 @@ public class RHEAPoCConfiguratorServiceImplTest {
 		);
 			
 		Integer[] expected = new Integer[]{
-			6547,
 			5090,
 			5624,
 			1053,
@@ -625,8 +624,6 @@ public class RHEAPoCConfiguratorServiceImplTest {
 			8159,
 			8143,
 			8142,
-			8534,
-			8534,
 			8534,
 			8534,
 			8534,

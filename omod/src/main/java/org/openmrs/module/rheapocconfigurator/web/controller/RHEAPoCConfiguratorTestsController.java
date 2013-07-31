@@ -13,6 +13,9 @@
  */
 package org.openmrs.module.rheapocconfigurator.web.controller;
 
+import java.util.Collections;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -90,6 +93,10 @@ public class  RHEAPoCConfiguratorTestsController {
 
 		public Boolean getStatusFormsValidation() {
 			return formsResult!=null && formsResult.getStatus();
+		}
+		
+		public List<String> getStatusFormsValidationErrors() {
+			return formsResult!=null ? formsResult.getErrors() : Collections.EMPTY_LIST;
 		}
 
 		public AuthenticationTestInput getAuthTestInput() {
