@@ -16,7 +16,11 @@ package org.openmrs.module.rheapocconfigurator.api.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.openmrs.Concept;
+import org.openmrs.ConceptMap;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.GlobalProperty;
@@ -28,6 +32,7 @@ import org.openmrs.Role;
 import org.openmrs.VisitType;
 import org.openmrs.api.APIException;
 import org.openmrs.api.AdministrationService;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.FormService;
 import org.openmrs.api.PatientService;
@@ -53,13 +58,13 @@ import org.openmrs.module.rheapocconfigurator.api.db.RHEAPoCConfiguratorDAO;
  */
 public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implements RHEAPoCConfiguratorService {
 	
-	private static final String[] IDENTIFIER_TYPES = new String[]{
+	public static final String[] IDENTIFIER_TYPES = new String[]{
 		"NID",
 		"Primary Care ID Type",
 		"Mutuelle",
 		"RAMA"
 	};
-	private static final String[] ENCOUNTER_TYPES = new String[]{
+	public static final String[] ENCOUNTER_TYPES = new String[]{
 		"ANC OB and Past Medical History",
 		"ANC Physical",
 		"ANC Testing",
@@ -71,7 +76,7 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 		"RapidSMS Notification Maternal Death",
 		"RapidSMS Notification RISK",
 	};
-	private static final String[] PROVIDER_PRIVILEGES = new String[]{
+	public static final String[] PROVIDER_PRIVILEGES = new String[]{
 		"Add Appointments",
 		"Add Encounters",
 		"Add Observations",
@@ -135,7 +140,7 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 		"View Visits",
 		"View Encounter Types",
 	};
-	private static final FormMetadata[] FORMS = new FormMetadata[]{
+	public static final FormMetadata[] FORMS = new FormMetadata[]{
 		new FormMetadata("RHEA ANC 1: Past Medical History", "1.0", ENCOUNTER_TYPES[0], "ANC Past Medical History.html"),
 		new FormMetadata("RHEA ANC 2: Physical Examination", "1.0", ENCOUNTER_TYPES[1], "ANC Physical Examination.html"),
 		new FormMetadata("RHEA ANC 3: Investigation", "1.0", ENCOUNTER_TYPES[2], "ANC Investigation.html"),
@@ -143,7 +148,7 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 		new FormMetadata("RHEA ANC 5: Referral Confirmation Form", "1.0", ENCOUNTER_TYPES[5], "ANC Referral Confirmation Form.html"),
 		new FormMetadata("RHEA ANC 6: Delivery Report", "1.0", ENCOUNTER_TYPES[6], "ANC Delivery Report.html")
 	};
-	private static final GlobalProperty[] GLOBAL_PROPERTIES = new GlobalProperty[]{
+	public static final GlobalProperty[] GLOBAL_PROPERTIES = new GlobalProperty[]{
 		new GlobalProperty("registration.barCodeCount", "4"),
 		new GlobalProperty("registration.healthCenterPersonAttribute", "health center"),
 		new GlobalProperty("registration.insuranceNumberConcept", "6741"),
@@ -157,8 +162,10 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 
 		new GlobalProperty("htmlformentry.dateFormat", "MM/dd/yyyy"),
 	};
-	private static final String VISIT_TYPE = "Primary Care Outpatient";
-	private static final String VISIT_DESCRIPTION = "Represents a single day primary care visit to a health center";
+	public static final String VISIT_TYPE = "Primary Care Outpatient";
+	public static final String VISIT_DESCRIPTION = "Represents a single day primary care visit to a health center";
+	
+	public static final String[] RHIE_MAPPINGS = new String[]{"ICD-10", "LOINC", "RWCS"};
 	
 	protected final Log log = LogFactory.getLog(this.getClass());
 	
@@ -443,9 +450,13 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 
 	@Override
 	public ValidateFormsResult validateFormConcepts() {
+		log.info("Performing form concept validations");
 		ValidateFormsResult result = new ValidateFormsResult();
 		FormService fs = Context.getFormService();
 		HtmlFormEntryService hfes = Context.getService(HtmlFormEntryService.class);
+		ConceptService cs = Context.getConceptService();
+		
+		result.setStatus(true);
 		
 		try {
 			for (FormMetadata fm : FORMS) {
@@ -454,17 +465,75 @@ public class RHEAPoCConfiguratorServiceImpl extends BaseOpenmrsService implement
 				
 				HtmlForm htmlForm = hfes.getHtmlFormByForm(form);
 				if (htmlForm==null) continue;
+				
+				for (Integer conceptId : getConceptIds(htmlForm.getXmlData(), result)) {
+					validateConcept(conceptId, cs.getConcept(conceptId), result);
+				}
 			}
 		} catch (APIException ex) {
 			log.error("Failed to setup forms", ex);
-			return null;
+			result.setStatus(false);
+			return result;
 		}
         
+		if (result.getStatus()) {
+			log.error("Form concept validation successful");
+		} else {
+			log.error("Form concept validation failed");
+		}
+		if (!result.getErrors().isEmpty()) {
+			for (String error : result.getErrors()) {
+				log.info(error);
+			}
+		}
+		
 		return result;
 	}
 	
+	protected static List<Integer> getConceptIds(String formBody, ValidateFormsResult formsResult) {
+		List<Integer> result = new LinkedList<Integer>();
+		int i = 0;
+		
+		while (i>=0 && i<formBody.length()) {
+			i = formBody.indexOf("<obs", i);
+			if (i>=0 && i<formBody.length()) {
+				int j = formBody.indexOf("conceptId", i);
+				if (j>=0 && j<formBody.length()) {
+					int start = formBody.indexOf("\"", j);
+					int end = formBody.indexOf("\"", start+1);
+					String conceptId = formBody.substring(start+1, end);
+					try {
+						result.add(Integer.parseInt(conceptId));
+					} catch (NumberFormatException ex) {
+						//We won't set the result status to false. We'll rather treat this error as a warning.
+						formsResult.addError("Concept ID: " + conceptId + "\nWarning: Failed to parse");
+					}
+				}
+				i = j;
+			}
+		}
+		
+		return result;
+	}
 	
-	private static class FormMetadata {
+	protected void validateConcept(Integer conceptId, Concept c, ValidateFormsResult result) {
+		if (c == null) {
+			result.setStatus(false);
+			result.addError("Concept ID: " + conceptId + "\nError: Unknown concept id");
+		} else {
+			for (ConceptMap cm : c.getConceptMappings()) {
+				for (String mapping : RHIE_MAPPINGS) {
+					if (mapping.equals(cm.getConceptReferenceTerm().getConceptSource().getName()))
+						return;
+				}
+			}
+			result.setStatus(false);
+			result.addError("Concept ID: " + conceptId + "\nError: No concept mappings found for any of " + RHIE_MAPPINGS);
+		}
+	}
+	
+	
+	public static class FormMetadata {
 		String name;
 		String version;
 		String encounterType;

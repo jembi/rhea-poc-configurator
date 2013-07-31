@@ -45,10 +45,6 @@ public class  RHEAPoCConfiguratorTestsController {
 	public void manage(ModelMap model) {
 		if (model.get("tests")==null)
 			model.put("tests", new Tests());
-		/* TODO implement form validations */
-		((Tests)model.get("tests")).formsResult = new ValidateFormsResult();
-		((Tests)model.get("tests")).formsResult.setStatus(true);
-		/* */
 	}
 	
 	@RequestMapping(value = "/module/rheapocconfigurator/testSystem", method = RequestMethod.POST)
@@ -60,14 +56,13 @@ public class  RHEAPoCConfiguratorTestsController {
 		} catch (UnexpectedRollbackException ex) {
 			tests.statusAuthTest = false;
 		}
-		/* TODO implement form validations */
-		//try {
-		//	tests.formsResult = cs.validateFormConcepts();
-		//} catch (UnexpectedRollbackException ex) {
-		//	if (tests.formsResult==null)
-		//		tests.formsResult = new ValidateFormsResult();
-		//	tests.formsResult.setStatus(false);
-		//}
+		try {
+			tests.formsResult = cs.validateFormConcepts();
+		} catch (UnexpectedRollbackException ex) {
+			if (tests.formsResult==null)
+				tests.formsResult = new ValidateFormsResult();
+			tests.formsResult.setStatus(false);
+		}
 		
 		return new ModelAndView("redirect:testSystem.form");
 	}

@@ -29,7 +29,6 @@
 					</c:choose>
 				</td>
 			</tr>
-			<%--
 			<tr>
 				<td>Form Concepts Validation</td>
 				<td>
@@ -39,7 +38,6 @@
 					</c:choose>
 				</td>
 			</tr>
-			--%>
 		</table>
 	</c:otherwise>
 </c:choose>

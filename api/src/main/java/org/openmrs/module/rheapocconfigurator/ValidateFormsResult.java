@@ -6,7 +6,7 @@ import java.util.List;
 public class ValidateFormsResult {
 	
 	private boolean status = false;
-	private List<String> failedConcepts = new ArrayList<String>();
+	private List<String> errors = new ArrayList<String>();
 	
 	public boolean getStatus() {
 		return status;
@@ -16,11 +16,11 @@ public class ValidateFormsResult {
 		this.status = status;
 	}
 	
-	public List<String> getFailedConcepts() {
-		return failedConcepts;
+	public List<String> getErrors() {
+		return errors;
 	}
 	
-	public void addFailedConcept(String conceptID) {
-		this.failedConcepts.add(conceptID);
+	public void addError(String error) {
+		this.errors.add(error);
 	}
 }
